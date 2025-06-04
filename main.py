@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.by import By
 
 
 profile_path = "C:\\Users\\Certheus\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\05llhb7i.automatization"
@@ -27,29 +28,39 @@ senha.send_keys('mdvHxi65')
 
 sleep(15)
 
-# selecionar uma aba
-
-# abas = navegador.window_handles
-# navegador.switch_to.window(abas[1])
-
 navegador.get('https://servicos.sinceti.net.br/app/view/sight/main.php?form=CadastroART')
-# sleep(3)
 
 opcoes = navegador.find_element('id', 'TIPOART')
 espera_opcoes = WebDriverWait(navegador, 100)
 espera_opcoes.until(EC.element_to_be_clickable(opcoes))
 opcoes.click()
 
-# sleep(1)
-
 servico = Select(opcoes)
 servico.select_by_value('COD101')
 
 # espera_confirmacao = WebDriverWait(navegador, 100)
 # espera_confirmacao.until(EC.element_to_be_clickable(confirmacao))
-sleep(4)
-confirmacao = navegador.find_element('class name', 'ajs-button ajs-ok') 
-confirmacao.click()
-# visibility_of_element_located
-# espera.until(EC.element_to_be_clickable(senha))
 
+sleep(3)
+confirmacao = navegador.find_element(By.CLASS_NAME, "ajs-ok") 
+confirmacao.click()
+
+sleep(3)
+forma_registro = navegador.find_element(By.ID, "FORMADEREGISTRO")
+forma = Select(forma_registro)
+forma.select_by_value('5')
+
+sleep(3)
+finalidade = navegador.find_element(By.ID, "FINALIDADE")
+navegador.execute_script("arguments[0].scrollIntoView({block: 'center'})", finalidade)
+fin = Select(finalidade)
+fin.select_by_value('29')
+
+
+
+
+
+# selecionar uma aba
+
+# abas = navegador.window_handles
+# navegador.switch_to.window(abas[1])
