@@ -50,13 +50,40 @@ forma_registro = navegador.find_element(By.ID, "FORMADEREGISTRO")
 forma = Select(forma_registro)
 forma.select_by_value('5')
 
-sleep(3)
 finalidade = navegador.find_element(By.ID, "FINALIDADE")
-navegador.execute_script("arguments[0].scrollIntoView({block: 'center'})", finalidade)
+navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", finalidade)
+espera_finalidade = WebDriverWait(navegador, 100)
+espera_finalidade.until(EC.element_to_be_clickable(finalidade))
 fin = Select(finalidade)
 fin.select_by_value('29')
 
 
+observaçao = navegador.find_element(By.ID, 'OBSERVACAO')
+vidro = 'incolor temperado'
+processo = 'pintada'
+cor_aluminio = 'branco'
+observaçao.send_keys(f'Envidraçamento de sacada com vidro liso {vidro} e esquadrias de aluminio {processo} de {cor_aluminio}.')
+
+novo_atividade = navegador.find_element(By.ID, 'NOVO_ATIVIDADE')
+navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", novo_atividade)
+novo_atividade.click()
+
+espera_nivel_ativ = WebDriverWait(navegador, 100)
+espera_nivel_ativ.until(EC.element_to_be_clickable((By.ID, 'NIVEL0')))
+nivel_ativ = navegador.find_element(By.ID, 'NIVEL0')
+niveis_ativ = Select(nivel_ativ)
+niveis_ativ.select_by_value('1004')
+
+ativ_prof = navegador.find_element(By.ID, 'ATIVIDADEPROFISSIONAL0')
+atividades_prof = Select(ativ_prof)
+atividades_prof.select_by_value('4200')
+
+atuacao = navegador.find_element(By.ID, 'LABELATUACAO0')
+atuacao.send_keys('1112')
+espera_atuacao = WebDriverWait(navegador, 100)
+espera_atuacao.until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[7]/div[1]/div/div[4]/div[1]/div[8]/div[3]/ul/li')))
+fachada_mistos = navegador.find_element(By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[7]/div[1]/div/div[4]/div[1]/div[8]/div[3]/ul/li')
+fachada_mistos.click()
 
 
 
