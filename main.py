@@ -41,11 +41,16 @@ servico.select_by_value('COD101')
 # espera_confirmacao = WebDriverWait(navegador, 100)
 # espera_confirmacao.until(EC.element_to_be_clickable(confirmacao))
 
-sleep(3)
+espera_confirmacao = WebDriverWait(navegador, 100)
+espera_confirmacao.until(EC.element_to_be_clickable((By.CLASS_NAME, "ajs-ok")))
 confirmacao = navegador.find_element(By.CLASS_NAME, "ajs-ok") 
 confirmacao.click()
 
-sleep(3)
+espera = WebDriverWait(navegador, 100)
+espera.until(EC.invisibility_of_element_located((By.ID, "ajax-overlay")))
+
+espera_forma_registro = WebDriverWait(navegador, 100)
+espera_forma_registro.until(EC.element_to_be_clickable((By.ID, 'FORMADEREGISTRO')))
 forma_registro = navegador.find_element(By.ID, "FORMADEREGISTRO")
 forma = Select(forma_registro)
 forma.select_by_value('5')
@@ -63,6 +68,13 @@ vidro = 'incolor temperado'
 processo = 'pintada'
 cor_aluminio = 'branco'
 observaçao.send_keys(f'Envidraçamento de sacada com vidro liso {vidro} e esquadrias de aluminio {processo} de {cor_aluminio}.')
+
+acao_inst = navegador.find_element(By.ID, 'ACAOINSTITUCIONAL')
+acoes_inst = Select(acao_inst)
+acoes_inst.select_by_value('17')
+
+esperar_ajax = WebDriverWait(navegador, 100)
+esperar_ajax.until(EC.invisibility_of_element_located((By.ID, 'ajax-overlay')))
 
 novo_atividade = navegador.find_element(By.ID, 'NOVO_ATIVIDADE')
 navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", novo_atividade)
@@ -84,6 +96,20 @@ espera_atuacao = WebDriverWait(navegador, 100)
 espera_atuacao.until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[7]/div[1]/div/div[4]/div[1]/div[8]/div[3]/ul/li')))
 fachada_mistos = navegador.find_element(By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[7]/div[1]/div/div[4]/div[1]/div[8]/div[3]/ul/li')
 fachada_mistos.click()
+
+unidade = navegador.find_element(By.ID, 'UNIDADE0')
+unidades = Select(unidade)
+unidades.select_by_value('2')
+
+qntd = 10
+quantidade = navegador.find_element(By.ID, 'QUANTIDADE0')
+quantidade.send_keys(qntd)
+
+
+
+ 
+
+#criar funcao para selecionar e para clicar 
 
 
 
