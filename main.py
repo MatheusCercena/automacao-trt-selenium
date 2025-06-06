@@ -55,6 +55,9 @@ forma_registro = navegador.find_element(By.ID, "FORMADEREGISTRO")
 forma = Select(forma_registro)
 forma.select_by_value('5')
 
+esperar_ajax = WebDriverWait(navegador, 100)
+esperar_ajax.until(EC.invisibility_of_element_located((By.ID, 'ajax-overlay')))
+
 finalidade = navegador.find_element(By.ID, "FINALIDADE")
 navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", finalidade)
 espera_finalidade = WebDriverWait(navegador, 100)
@@ -101,17 +104,45 @@ unidade = navegador.find_element(By.ID, 'UNIDADE0')
 unidades = Select(unidade)
 unidades.select_by_value('2')
 
-qntd = 10
+qntd = int(str(10)+'000')
 quantidade = navegador.find_element(By.ID, 'QUANTIDADE0')
 quantidade.send_keys(qntd)
 
+novo_contrato = navegador.find_element(By.ID, 'NOVO_CONTRATO')
+navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", novo_contrato)
+novo_contrato.click()
+
+espera_contratante = WebDriverWait(navegador, 100)
+espera_contratante.until(EC.element_to_be_clickable((By.ID, 'contratante0_ContratantePFNome')))
+contratante_pes_fis = navegador.find_element(By.ID, 'contratante0_ContratantePFNome')
+contratante_pes_fis.click()
+
+nome = 'Fulano de Tal'
+espera_nome = WebDriverWait(navegador, 100)
+espera_nome.until(EC.element_to_be_clickable((By.ID, 'contratante0_CampoContratantePFNome')))
+nome_contratante = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
+nome_contratante.send_keys(nome)
 
 
- 
+clique_fora = navegador.find_element(By.ID, 'myCont0')
+clique_fora.click()
+
+esperar_cadastro = WebDriverWait(navegador, 100)
+esperar_cadastro.until(EC.element_to_be_clickable((By.CLASS_NAME, 'botao_adicionar')))
+cadastrar = navegador.find_element(By.CLASS_NAME, 'botao_adicionar')
+cadastrar.click()
+
+janela_atual = navegador.current_window_handle
+sleep(3)
+janelas = navegador.window_handles
+for janela in janelas:
+    if janela != janela_atual:
+        navegador.switch_to(janela)
+        break
+
+
 
 #criar funcao para selecionar e para clicar 
-
-
 
 # selecionar uma aba
 
