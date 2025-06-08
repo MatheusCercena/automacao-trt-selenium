@@ -10,11 +10,6 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
 import os
 import requests
-import cv2
-import pytesseract
-
-pytesseract.pytesseract.tesseract_cmd = 'C://Program Files//Tesseract-OCR//tesseract.exe'
-
 
 profile_path = "C:\\Users\\Certheus\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\05llhb7i.automatization"
 options = Options()
@@ -35,33 +30,6 @@ senha.send_keys('mdvHxi65')
 
 validacao = navegador.find_element(By.ID, 'code')
 validacao.click()
-
-imagem_login = navegador.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/form/div[1]/table/tbody/tr[6]/td[2]/div/div/img')
-imagem_login_URL = imagem_login.get_attribute('src')
-image_name = f'{randint(0000000000, 9999999999)}_validacao.jpg'
-image_folder = 'images'
-os.makedirs(image_folder, exist_ok=True)
-image_path = os.path.join(image_folder, image_name)
-
-binario_da_imagem = requests.get(imagem_login_URL, stream=True)
-
-if binario_da_imagem.status_code == 200:
-    with open(image_path, 'wb') as file:
-        for chunk in binario_da_imagem.iter_content(chunk_size=8192):
-            file.write(chunk)
-else:
-    print("Erro ao baixar a imagem:", binario_da_imagem.status_code)
-
-image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY_INV)[1]
-image = cv2.medianBlur(image, 3)
-
-text = pytesseract.image_to_string(image, config='--psm 7')
-
-
-
-validacao.send_keys(text.strip())
-
 
 sleep(15)
 
