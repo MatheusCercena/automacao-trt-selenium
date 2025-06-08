@@ -2,30 +2,20 @@ from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
 from time import sleep
-from random import randint
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
-import os
-import requests
 
-profile_path = "C:\\Users\\Certheus\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\05llhb7i.automatization"
-options = Options()
-options.profile = profile_path
-
-navegador = webdriver.Firefox(service=Service(), options=options)
+navegador = webdriver.Firefox(service=Service(), options=Options())
 
 navegador.get('https://servicos.sinceti.net.br/')
 navegador.maximize_window()
 
 login = navegador.find_element('id', 'login')
-login.click()
 login.send_keys('12676911902')
 
 senha = navegador.find_element('id', 'senha')
-senha.click()
 senha.send_keys('mdvHxi65')
 
 validacao = navegador.find_element(By.ID, 'code')
@@ -38,13 +28,9 @@ navegador.get('https://servicos.sinceti.net.br/app/view/sight/main.php?form=Cada
 opcoes = navegador.find_element('id', 'TIPOART')
 espera_opcoes = WebDriverWait(navegador, 100)
 espera_opcoes.until(EC.element_to_be_clickable(opcoes))
-opcoes.click()
 
 servico = Select(opcoes)
 servico.select_by_value('COD101')
-
-# espera_confirmacao = WebDriverWait(navegador, 100)
-# espera_confirmacao.until(EC.element_to_be_clickable(confirmacao))
 
 espera_confirmacao = WebDriverWait(navegador, 100)
 espera_confirmacao.until(EC.element_to_be_clickable((By.CLASS_NAME, "ajs-ok")))
@@ -70,12 +56,11 @@ espera_finalidade.until(EC.element_to_be_clickable(finalidade))
 fin = Select(finalidade)
 fin.select_by_value('29')
 
-
 observaçao = navegador.find_element(By.ID, 'OBSERVACAO')
 vidro = 'incolor temperado'
 processo = 'pintada'
 cor_aluminio = 'branco'
-observaçao.send_keys(f'Envidraçamento de sacada com vidro liso {vidro} e esquadrias de aluminio {processo} de {cor_aluminio}.')
+observaçao.send_keys()
 
 acao_inst = navegador.find_element(By.ID, 'ACAOINSTITUCIONAL')
 acoes_inst = Select(acao_inst)
@@ -101,8 +86,8 @@ atividades_prof.select_by_value('4200')
 atuacao = navegador.find_element(By.ID, 'LABELATUACAO0')
 atuacao.send_keys('1112')
 espera_atuacao = WebDriverWait(navegador, 100)
-espera_atuacao.until(EC.element_to_be_clickable((By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[7]/div[1]/div/div[4]/div[1]/div[8]/div[3]/ul/li')))
-fachada_mistos = navegador.find_element(By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[7]/div[1]/div/div[4]/div[1]/div[8]/div[3]/ul/li')
+espera_atuacao.until(EC.element_to_be_clickable((By.CSS_SELECTOR, '#listaAtividadeEscolherATUACAO0 > ul:nth-child(1) > li:nth-child(1)')))
+fachada_mistos = navegador.find_element(By.CSS_SELECTOR, '#listaAtividadeEscolherATUACAO0 > ul:nth-child(1) > li:nth-child(1)')
 fachada_mistos.click()
 
 unidade = navegador.find_element(By.ID, 'UNIDADE0')
@@ -112,7 +97,7 @@ unidades.select_by_value('2')
 qntd = int(str(10)+'000')
 quantidade = navegador.find_element(By.ID, 'QUANTIDADE0')
 quantidade.send_keys(qntd)
-
+#############################################
 novo_contrato = navegador.find_element(By.ID, 'NOVO_CONTRATO')
 navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", novo_contrato)
 novo_contrato.click()
@@ -127,7 +112,6 @@ espera_nome = WebDriverWait(navegador, 100)
 espera_nome.until(EC.element_to_be_clickable((By.ID, 'contratante0_CampoContratantePFNome')))
 nome_contratante = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
 nome_contratante.send_keys(nome)
-
 
 clique_fora = navegador.find_element(By.ID, 'myCont0')
 clique_fora.click()
@@ -217,6 +201,7 @@ numero_do_contrato.send_keys(os)
 
 inicio_obra = navegador.find_element(By.ID, 'CONTRATO_DATAINICIO0')
 inicio_obra.send_keys(datahj)
+
 fim_obra = navegador.find_element(By.ID, 'CONTRATO_DATAFIM0')
 fim_obra.send_keys(data_final)
 
@@ -235,34 +220,22 @@ esperar_ajax.until(EC.invisibility_of_element_located((By.ID, 'ajax-overlay')))
 
 escolher_coordenadas.click()
 
-sleep(2)
 
-imagem_validacao = navegador.find_element(By.ID, 'siimage')
-imagem_validacao_URL = imagem_validacao.get_attribute('src')
-image_name = f'{randint(0000000000, 9999999999)}_validacao.jpg'
-image_folder = 'images'
-os.makedirs(image_folder, exist_ok='True')
-image_path = os.path.join(image_folder, image_name)
+janela_atual = navegador.current_window_handle
+WebDriverWait(navegador, 100).until(EC.number_of_windows_to_be(2))
+janelas = navegador.window_handles
 
-binario_da_imagem = requests.get(imagem_validacao_URL, stream=True)
+for janela in janelas:
+    if janela != janela_atual:
+        navegador.switch_to.window(janela)
+        break
 
-with open(image_path, 'wb') as file:
-    for chunk in binario_da_imagem.iter_content(chunk_size=8192):
-        file.write(chunk)
+WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
+navegador.close()
 
-image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
-image = cv2.threshold(image, 80, 215, cv2.THRESH_BINARY_INV)[1]
-image = cv2.medianBlur(image, 3)
+navegador.switch_to.window(janela_atual)
 
-text = pytesseract.image_to_string(image, config='--psm 8')
 
 validacao = navegador.find_element(By.ID, 'code')
 navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", validacao)
-validacao.send_keys(text.strip())
-
-#criar funcao para selecionar e para clicar
-
-# selecionar uma aba
-
-# abas = navegador.window_handles
-# navegador.switch_to.window(abas[1])
+validacao.click()
