@@ -6,6 +6,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
+import pyautogui
 
 def esperar_ajax(navegador):
     espera = WebDriverWait(navegador, 100)
@@ -32,6 +33,7 @@ def escrever(navegador, tipo_seletor, seletor, key):
     objeto = navegador.find_element(tipo_seletor, seletor)
     navegador.execute_script("arguments[0].scrollIntoView({block: 'center'})", objeto)
     objeto.send_keys(key)
+
 
 def trocar_janela_ativa(navegador):
     janelas = navegador.window_handles
@@ -128,7 +130,8 @@ escrever(navegador, By.ID, 'CONTRATO_NUMERO', ordem_de_servico)
 escrever(navegador, By.ID, 'CONTRATO_DATAINICIO0', datahj)
 escrever(navegador, By.ID, 'CONTRATO_DATAFIM0', data_final)
 escrever(navegador, By.ID, 'CONTRATO_VALOR0', valor)
-clicar(navegador, By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[9]/div[1]/div/div[33]/div[2]/div[3]/input[1]')
+pyautogui.press('enter')
+clicar(navegador, By.CSS_SELECTOR, '#evtContratoEnderecoContainerSpecific0 > div:nth-child(3) > input:nth-child(1)')
 
 trocar_janela_ativa(navegador)
 
