@@ -2,11 +2,18 @@ from selenium import webdriver
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox.options import Options
 from time import sleep
+from random import randint
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.by import By
+import os
+import requests
+import cv2
+import pytesseract
+
+pytesseract.pytesseract.tesseract_cmd = 'C://Program Files//Tesseract-OCR//tesseract.exe'
 
 
 profile_path = "C:\\Users\\Certheus\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\05llhb7i.automatization"
@@ -25,6 +32,36 @@ login.send_keys('12676911902')
 senha = navegador.find_element('id', 'senha')
 senha.click()
 senha.send_keys('mdvHxi65')
+
+validacao = navegador.find_element(By.ID, 'code')
+validacao.click()
+
+imagem_login = navegador.find_element(By.XPATH, '/html/body/div[2]/div[2]/div/form/div[1]/table/tbody/tr[6]/td[2]/div/div/img')
+imagem_login_URL = imagem_login.get_attribute('src')
+image_name = f'{randint(0000000000, 9999999999)}_validacao.jpg'
+image_folder = 'images'
+os.makedirs(image_folder, exist_ok=True)
+image_path = os.path.join(image_folder, image_name)
+
+binario_da_imagem = requests.get(imagem_login_URL, stream=True)
+
+if binario_da_imagem.status_code == 200:
+    with open(image_path, 'wb') as file:
+        for chunk in binario_da_imagem.iter_content(chunk_size=8192):
+            file.write(chunk)
+else:
+    print("Erro ao baixar a imagem:", binario_da_imagem.status_code)
+
+image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+image = cv2.threshold(image, 127, 255, cv2.THRESH_BINARY_INV)[1]
+image = cv2.medianBlur(image, 3)
+
+text = pytesseract.image_to_string(image, config='--psm 7')
+
+
+
+validacao.send_keys(text.strip())
+
 
 sleep(15)
 
@@ -117,7 +154,7 @@ espera_contratante.until(EC.element_to_be_clickable((By.ID, 'contratante0_Contra
 contratante_pes_fis = navegador.find_element(By.ID, 'contratante0_ContratantePFNome')
 contratante_pes_fis.click()
 
-nome = 'Fulano de Tal'
+nome = 'Marcelo Germano'
 espera_nome = WebDriverWait(navegador, 100)
 espera_nome.until(EC.element_to_be_clickable((By.ID, 'contratante0_CampoContratantePFNome')))
 nome_contratante = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
@@ -129,20 +166,133 @@ clique_fora.click()
 
 esperar_cadastro = WebDriverWait(navegador, 100)
 esperar_cadastro.until(EC.element_to_be_clickable((By.CLASS_NAME, 'botao_adicionar')))
-cadastrar = navegador.find_element(By.CLASS_NAME, 'botao_adicionar')
-cadastrar.click()
 
-janela_atual = navegador.current_window_handle
-sleep(3)
-janelas = navegador.window_handles
-for janela in janelas:
-    if janela != janela_atual:
-        navegador.switch_to(janela)
-        break
+esperar_ajax = WebDriverWait(navegador, 100)
+esperar_ajax.until(EC.invisibility_of_element_located((By.ID, 'ajax-overlay')))
+
+# cadastrar = navegador.find_element(By.CLASS_NAME, 'botao_adicionar')
+# cadastrar.click()
+
+# cpf_valor = '12345678900'
+# genero = 'M'
+# email = 'email'
+
+# janela_atual = navegador.current_window_handle
+# janelas = navegador.window_handles
+
+# sleep(3)
+
+# for janela in janelas:
+#     if janela != janela_atual:
+#         navegador.switch_to.window(janela)
+#         break
+
+# esperar_cadastro = WebDriverWait(navegador, 100)
+# esperar_cadastro.until(EC.element_to_be_clickable((By.ID, 'CPF')))
+# cpf = navegador.find_element(By.ID, 'CPF')
+# cpf.send_keys(cpf_valor)
+
+# generos = navegador.find_element(By.ID, 'SEXO')
+# opcoes_genero = Select(generos)
+# opcoes_genero.select_by_value(genero)
+
+# campo_email = navegador.find_element(By.ID, 'EMAIL')
+# campo_email.send_keys(email)
 
 
+# cep = 12345678
+# numero = 1234
+# complemento = 'Rua Tal Tal Tal, Residencial Tal'
+# telefone = 48998765432
 
-#criar funcao para selecionar e para clicar 
+# campo_cep = navegador.find_element(By.ID, 'CEP')
+# campo_cep.send_keys(cep)
+
+# campo_numero = navegador.find_element(By.ID, 'ENDERECO_NUMERO')
+# campo_numero.send_keys(numero)
+
+# campo_complemento = navegador.find_element(By.ID, 'COMPLEMENTO')
+# campo_complemento.send_keys(complemento)
+
+# campo_telefone = navegador.find_element(By.ID, 'ENDERECO_TELEFONE')
+# campo_telefone.send_keys(telefone)
+
+# campo_salvar = navegador.find_element(By.ID, 'save')
+# navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", campo_salvar)
+# campo_salvar.click()
+
+# sleep(3)
+
+# nome_contratante.clear()
+
+# clique_fora = navegador.find_element(By.ID, 'myCont0')
+# clique_fora.click()
+
+# espera_nome = WebDriverWait(navegador, 100)
+# espera_nome.until(EC.element_to_be_clickable((By.ID, 'contratante0_CampoContratantePFNome')))
+
+# nome_contratante.send_keys(nome)
+
+aproveita_dados = navegador.find_element(By.ID, 'proprietario0_AproveitaDados')
+aproveita_dados.click()
+
+espera_os = WebDriverWait(navegador, 100)
+espera_os.until(EC.element_to_be_clickable((By.ID, 'CONTRATO_NUMERO')))
+
+os = '356/24'
+datahj = '060625'
+data_final = '060825'
+valor = int(str(5000)+'00')
+
+numero_do_contrato = navegador.find_element(By.ID, 'CONTRATO_NUMERO')
+numero_do_contrato.send_keys(os)
+
+inicio_obra = navegador.find_element(By.ID, 'CONTRATO_DATAINICIO0')
+inicio_obra.send_keys(datahj)
+fim_obra = navegador.find_element(By.ID, 'CONTRATO_DATAFIM0')
+fim_obra.send_keys(data_final)
+
+valor_da_obra = navegador.find_element(By.ID, 'CONTRATO_VALOR0')
+valor_da_obra.send_keys(valor)
+
+endereco_contratante = navegador.find_element(By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[9]/div[1]/div/div[33]/div[2]/div[3]/input[1]')
+navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", endereco_contratante)
+endereco_contratante.click()
+
+escolher_coordenadas = navegador.find_element(By.ID, 'ESCOLHERCORDENADASGMAP')
+navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", escolher_coordenadas)
+
+esperar_ajax = WebDriverWait(navegador, 100)
+esperar_ajax.until(EC.invisibility_of_element_located((By.ID, 'ajax-overlay')))
+
+escolher_coordenadas.click()
+
+sleep(2)
+
+imagem_validacao = navegador.find_element(By.ID, 'siimage')
+imagem_validacao_URL = imagem_validacao.get_attribute('src')
+image_name = f'{randint(0000000000, 9999999999)}_validacao.jpg'
+image_folder = 'images'
+os.makedirs(image_folder, exist_ok='True')
+image_path = os.path.join(image_folder, image_name)
+
+binario_da_imagem = requests.get(imagem_validacao_URL, stream=True)
+
+with open(image_path, 'wb') as file:
+    for chunk in binario_da_imagem.iter_content(chunk_size=8192):
+        file.write(chunk)
+
+image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
+image = cv2.threshold(image, 80, 215, cv2.THRESH_BINARY_INV)[1]
+image = cv2.medianBlur(image, 3)
+
+text = pytesseract.image_to_string(image, config='--psm 8')
+
+validacao = navegador.find_element(By.ID, 'code')
+navegador.execute_script("arguments[0].scrollIntoView({block: 'start'})", validacao)
+validacao.send_keys(text.strip())
+
+#criar funcao para selecionar e para clicar
 
 # selecionar uma aba
 
