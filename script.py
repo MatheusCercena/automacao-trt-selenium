@@ -14,6 +14,8 @@ def esperar_ajax(navegador):
 
 def selecionar_combo_box(navegador, tipo_seletor, seletor, valor):
     esperar_ajax(navegador)
+    espera_objeto = WebDriverWait(navegador, 100)
+    espera_objeto.until(EC.element_to_be_clickable((tipo_seletor, seletor)))
     objeto = navegador.find_element(tipo_seletor, seletor)
     combo_box = Select((objeto))
     combo_box.select_by_value(valor)
@@ -40,6 +42,10 @@ def trocar_janela_ativa(navegador):
     WebDriverWait(navegador, 100).until(EC.number_of_windows_to_be(2))
     navegador.switch_to.window(janelas[1])
     WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
+
+def fechar_janelas_extras(navegador):
+    navegador.close()
+    navegador.switch_to.window(navegador.window_handles[0])
 
 def limpar(navegador, tipo_seletor, seletor):
     objeto = navegador.find_element(tipo_seletor, seletor)
@@ -72,7 +78,7 @@ navegador.maximize_window()
 escrever(navegador, By.ID, 'login', '12676911902')
 escrever(navegador, By.ID, 'senha', 'mdvHxi65')
 clicar(navegador, By.ID, 'code')
-sleep(15)
+sleep(10)
 
 navegador.get('https://servicos.sinceti.net.br/app/view/sight/main.php?form=CadastroART')
 
@@ -129,15 +135,16 @@ clicar(navegador, By.ID, 'proprietario0_AproveitaDados')
 escrever(navegador, By.ID, 'CONTRATO_NUMERO', ordem_de_servico)
 escrever(navegador, By.ID, 'CONTRATO_DATAINICIO0', datahj)
 escrever(navegador, By.ID, 'CONTRATO_DATAFIM0', data_final)
-escrever(navegador, By.ID, 'CONTRATO_VALOR0', valor)
 pyautogui.press('enter')
+sleep(1)
+escrever(navegador, By.ID, 'CONTRATO_VALOR0', valor)
 clicar(navegador, By.CSS_SELECTOR, '#evtContratoEnderecoContainerSpecific0 > div:nth-child(3) > input:nth-child(1)')
 
-trocar_janela_ativa(navegador)
+clicar(navegador, By.ID, 'ESCOLHERCORDENADASGMAP')
 
-navegador.close()
-janela_atual = navegador.current_window_handle
-navegador.switch_to.window(janela_atual)
+trocar_janela_ativa(navegador)
+fechar_janelas_extras(navegador)
 
 #VALIDACAO
 clicar(navegador, By.ID, 'code')
+
