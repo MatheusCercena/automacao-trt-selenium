@@ -6,6 +6,19 @@ import re
 import config
 from acoes import *
 
+def acessar_ecg():
+    pass
+
+def pegar_dados_obra():
+    pass
+
+def dados_cliente():
+    pass
+
+def endereço_obra():
+    pass
+
+
 navegador = webdriver.Firefox(service=Service(), options=Options())
 navegador.get('https://ecgglass.com/ecg_glass/login/login.php')
 navegador.maximize_window()
@@ -22,26 +35,26 @@ clicar(navegador, By.CSS_SELECTOR, 'div.formulario_filtro:nth-child(6) > div:nth
 
 WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
 
-area = pegar_texto(navegador, By.CSS_SELECTOR, 'div.col-12:nth-child(7)')
-area2 = re.sub(r'\D', '', area )
+AREA = pegar_texto(navegador, By.CSS_SELECTOR, 'div.col-12:nth-child(7)')
+AREA = re.sub(r'\D', '', AREA)
 
 clicar(navegador, By.CSS_SELECTOR, 'a.f_16:nth-child(1)')
 clicar(navegador, By.CSS_SELECTOR, '.f_16 > b:nth-child(1)')
 
-nome = pegar_texto(navegador, By.CSS_SELECTOR, '.font-weight-bold').title()
-cpf = pegar_texto(navegador, By.CSS_SELECTOR, 'form.row:nth-child(1) > div:nth-child(6) > span:nth-child(2)').replace('.', '').replace('-','')
-email = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(5) > span:nth-child(2) > a:nth-child(1)').lower()
-cep = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(6) > span:nth-child(2)')
-numero = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(11) > span:nth-child(2)')
-complemento = pegar_texto(navegador, By.CSS_SELECTOR, 'div.campo:nth-child(12) > span:nth-child(2)').title()
-telefone = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(4) > span:nth-child(2) > a:nth-child(1)')
+NOME = pegar_texto(navegador, By.CSS_SELECTOR, '.font-weight-bold').title()
+CPF = pegar_texto(navegador, By.CSS_SELECTOR, 'form.row:nth-child(1) > div:nth-child(6) > span:nth-child(2)').replace('.', '').replace('-','')
+EMAIL = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(5) > span:nth-child(2) > a:nth-child(1)').lower()
+CEP = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(6) > span:nth-child(2)')
+NUMERO = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(11) > span:nth-child(2)')
+COMPLEMENTO = pegar_texto(navegador, By.CSS_SELECTOR, 'div.campo:nth-child(12) > span:nth-child(2)').title()
+TELEFONE = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(4) > span:nth-child(2) > a:nth-child(1)')
 
 navegador.get(url)
 
 escrever(navegador, By.ID, 'text_numero_orcamento', config.numero_orçamento)
 clicar(navegador, By.CSS_SELECTOR, 'div.formulario_filtro:nth-child(4) > div:nth-child(2) > input:nth-child(1)')
 
-valor = pegar_texto(navegador, By.CSS_SELECTOR, 'html body div table.table tbody tr td table tbody tr td.tabelaSubCorpo b')
+PRECO = pegar_texto(navegador, By.CSS_SELECTOR, 'html body div table.table tbody tr td table tbody tr td.tabelaSubCorpo b')
 
 navegador.back()
 navegador.back()
@@ -50,8 +63,8 @@ navegador.back()
 
 clicar(navegador, By.ID, 'item_menu_dinamico_0')
 
-cor = 'seguindo padrao de cor das esquadrias do prédio'
-vidro = ''
+COR = 'seguindo padrao de cor das esquadrias do prédio'
+VIDRO = ''
 listar_projetos = None
 
 try:
@@ -72,7 +85,7 @@ if listar_projetos:
         if '1-SACADA-KAIZEN' in serial.text or '2-PORTAS-KAIZEN' in serial.text:
             value = serial.get_attribute('value')
             selecionar_combo_box(navegador, By.NAME, 'itemProj', value)
-            cor = pegar_texto(navegador, By.CSS_SELECTOR, '.ml-3 > b:nth-child(1)').lower()
-            vidro = pegar_texto(navegador, By.CSS_SELECTOR, 'div.row:nth-child(3) > div:nth-child(1) > label:nth-child(1) > b:nth-child(1)').lower()
+            COR = pegar_texto(navegador, By.CSS_SELECTOR, '.ml-3 > b:nth-child(1)').lower()
+            VIDRO = pegar_texto(navegador, By.CSS_SELECTOR, 'div.row:nth-child(3) > div:nth-child(1) > label:nth-child(1) > b:nth-child(1)').lower()
             break
             
