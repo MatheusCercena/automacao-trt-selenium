@@ -5,13 +5,13 @@ from selenium.webdriver.common.by import By
 
 from time import sleep
 import pyautogui
-import config
 from acoes import *
 
 navegador = webdriver.Firefox(service=Service(), options=Options())
 navegador.get('https://servicos.sinceti.net.br/')
 navegador.maximize_window()
 
+print(type(navegador))
 #LOGIN
 escrever(navegador, By.ID, 'login', config.usuario_sinceti)
 escrever(navegador, By.ID, 'senha', config.senha_sinceti)
