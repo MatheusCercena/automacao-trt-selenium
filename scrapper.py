@@ -7,12 +7,16 @@ from acoes import *
 
 navegador = webdriver.Firefox(service=Service(), options=Options()) 
 
+#LOGIN
+
 def login_ecg(usuario, senha):       
     navegador.get('https://ecgglass.com/ecg_glass/login/login.php')
     navegador.maximize_window()
     escrever(navegador, By.NAME, 'text_usuario', usuario)
     escrever(navegador, By.NAME, 'password_senha', senha)
     clicar(navegador, By.CSS_SELECTOR, 'html body#bg_login_full div.container div#box_login_full form div.box_input.text-right input.btn.btn-primary')
+
+#ACESSOS
 
 def acessar_ordem_servico(ordem_de_servico):
     url = 'https://ecgglass.com/ecg_glass/geral/busca.php'
@@ -27,6 +31,8 @@ def acessar_orcamento(numero_orcamento):
         navegador.get(url)
     escrever(navegador, By.ID, 'text_numero_orcamento', numero_orcamento)
     clicar(navegador, By.CSS_SELECTOR, 'div.formulario_filtro:nth-child(4) > div:nth-child(2) > input:nth-child(1)')
+
+#BUSCAR DADOS
 
 def acessar_dados_cliente(ordem_de_servico):
     url = 'https://ecgglass.com/ecg_glass/geral/busca.php'
@@ -91,11 +97,11 @@ def pegar_dados_cliente(ordem_de_servico):
     telefone = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(4) > span:nth-child(2) > a:nth-child(1)')
     dados_cliente = {
     'nome' : nome,
-    'nome' : cpf,
-    'nome' : email,
-    'nome' : cep,
-    'nome' : numero,
-    'nome' : complemento,
-    'nome' : telefone
+    'cpf' : cpf,
+    'email' : email,
+    'cep' : cep,
+    'numero' : numero,
+    'complemento' : complemento,
+    'telefone' : telefone
     }
     return dados_cliente

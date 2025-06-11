@@ -7,32 +7,28 @@ from time import sleep
 import pyautogui
 from acoes import *
 
+
 navegador = webdriver.Firefox(service=Service(), options=Options())
-navegador.get('https://servicos.sinceti.net.br/')
-navegador.maximize_window()
 
-print(type(navegador))
-#LOGIN
-escrever(navegador, By.ID, 'login', config.usuario_sinceti)
-escrever(navegador, By.ID, 'senha', config.senha_sinceti)
-clicar(navegador, By.ID, 'code')
-sleep(10)
+def login_sinceti(usuario, senha):
+    navegador.get('https://servicos.sinceti.net.br/')
+    navegador.maximize_window()
+    escrever(navegador, By.ID, 'login', usuario)
+    escrever(navegador, By.ID, 'senha', senha)
+    clicar(navegador, By.ID, 'code')
+    sleep(10)
 
-navegador.get('https://servicos.sinceti.net.br/app/view/sight/main.php?form=CadastroART')
+def criar_nova_trt():
+    navegador.get('https://servicos.sinceti.net.br/app/view/sight/main.php?form=CadastroART')
+    selecionar_combo_box(navegador, By.ID, 'TIPOART', 'COD101')
+    clicar(navegador, By.CLASS_NAME, 'ajs-ok')
+    selecionar_combo_box(navegador, By.ID, 'FORMADEREGISTRO', '5')
 
-#SELECIONAR MODELO
-selecionar_combo_box(navegador, By.ID, 'TIPOART', 'COD101')
-clicar(navegador, By.CLASS_NAME, 'ajs-ok')
+def preencher_dados(dados_):
+    selecionar_combo_box(navegador, By.ID, 'FINALIDADE', '29')
+    escrever(navegador, By.ID, 'OBSERVACAO', config.obs)
+    selecionar_combo_box(navegador, By.ID, 'ACAOINSTITUCIONAL', '17')
 
-#FORMA DE REGISTRO
-selecionar_combo_box(navegador, By.ID, 'FORMADEREGISTRO', '5')
-
-#DADOS
-selecionar_combo_box(navegador, By.ID, 'FINALIDADE', '29')
-escrever(navegador, By.ID, 'OBSERVACAO', config.obs)
-
-#AÇÃO INSTITUICIONAL
-selecionar_combo_box(navegador, By.ID, 'ACAOINSTITUCIONAL', '17')
 
 #ATIVIDADES CONTRATADAS
 clicar(navegador, By.ID, 'NOVO_ATIVIDADE')

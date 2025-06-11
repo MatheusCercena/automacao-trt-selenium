@@ -12,9 +12,10 @@ senha_sinceti = 'mdvHxi65'
 # GERAL
 ordem_de_servico = '404/25-1'
 numero_orcamento = ordem_de_servico[:-2]
+dados_obra = pegar_dados_obra(numero_orcamento)
+dados_cliente = pegar_dados_cliente(ordem_de_servico)
 
 #SCRAPPING - DADOS DA OBRA
-dados_obra = pegar_dados_obra(numero_orcamento)
 area = int(str(dados_obra['area'])+'000')
 vidro = dados_obra['vidro']
 cor_aluminio = dados_obra['cor']
@@ -23,7 +24,6 @@ cores_anodizadas = ['BRONZE1002 ANODIZADO', 'INOX JATEADO', 'NAT. FOSCO']
 processo = ['anodizada' if cor_aluminio in [cores_anodizadas] else 'pintada']
 
 #SCRAPPING - DADOS DO CLIENTE
-dados_cliente = pegar_dados_cliente(ordem_de_servico)
 nome = dados_cliente['nome']
 cpf = dados_cliente['cpf']
 email = dados_cliente['email']
@@ -38,6 +38,7 @@ datahj = datetime.today().strftime('%d%m%y')
 data_final = (datetime.today() + relativedelta(months=2)).strftime('%d%m%y')
 obs = f'Envidraçamento de sacada com vidro liso {vidro} e esquadrias de aluminio {processo} na cor {cor_aluminio}.'
 
+dados = {}
 
 
 # #CONFIG
