@@ -1,7 +1,7 @@
 import gender_api
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
-from scrapper import AREA, NOME, CPF, EMAIL, CEP, NUMERO, COMPLEMENTO, TELEFONE, PRECO, COR, VIDRO
+from scrapper import login_ecg, pegar_dados_obra, pegar_dados_cliente
 
 # ADMIN
 usuario_ecg = 'matheusversatil'
@@ -11,39 +11,32 @@ senha_sinceti = 'mdvHxi65'
 
 # GERAL
 ordem_de_servico = '404/25-1'
-numero_orçamento = ordem_de_servico[:-2]
+numero_orcamento = ordem_de_servico[:-2]
 
 #SCRAPPING - DADOS DA OBRA
-area = int(str(AREA)+'000')
-vidro = VIDRO
-cor_aluminio = COR
-valor = int(str(PRECO)+'00')
+dados_obra = pegar_dados_obra(numero_orcamento)
+area = int(str(dados_obra['area'])+'000')
+vidro = dados_obra['vidro']
+cor_aluminio = dados_obra['cor']
+valor = int(str(dados_obra['preco'])+'00')
 cores_anodizadas = ['BRONZE1002 ANODIZADO', 'INOX JATEADO', 'NAT. FOSCO']
 processo = ['anodizada' if cor_aluminio in [cores_anodizadas] else 'pintada']
 
 #SCRAPPING - DADOS DO CLIENTE
-nome = NOME
-cpf = CPF
-email = EMAIL
-telefone = TELEFONE
-genero = gender_api.define_gender(NOME)
-
-#SCRAPPING - ENDEREÇO DA OBRA
-cep = CEP
-numero = NUMERO
-complemento = COMPLEMENTO
+dados_cliente = pegar_dados_cliente(ordem_de_servico)
+nome = dados_cliente['nome']
+cpf = dados_cliente['cpf']
+email = dados_cliente['email']
+telefone = dados_cliente['telefone']
+genero = gender_api.define_gender(nome)
+cep = dados_cliente['cep']
+numero = dados_cliente['numero']
+complemento = dados_cliente['complemento']
 
 # PREENCHIMENTO
 datahj = datetime.today().strftime('%d%m%y')
 data_final = (datetime.today() + relativedelta(months=2)).strftime('%d%m%y')
 obs = f'Envidraçamento de sacada com vidro liso {vidro} e esquadrias de aluminio {processo} na cor {cor_aluminio}.'
-
-
-
-
-
-
-
 
 
 
