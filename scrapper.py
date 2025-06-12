@@ -7,49 +7,43 @@ from acoes import *
 
 navegador = webdriver.Firefox(service=Service(), options=Options()) 
 
-#LOGIN
-
-def login_ecg(usuario, senha):       
+def login_ecg(usuario, senha):
     navegador.get('https://ecgglass.com/ecg_glass/login/login.php')
     navegador.maximize_window()
     escrever(navegador, By.NAME, 'text_usuario', usuario)
     escrever(navegador, By.NAME, 'password_senha', senha)
     clicar(navegador, By.CSS_SELECTOR, 'html body#bg_login_full div.container div#box_login_full form div.box_input.text-right input.btn.btn-primary')
 
-#ACESSOS
-
-def acessar_ordem_servico(ordem_de_servico):
+def acessar_ordem_servico(dados):
     url = 'https://ecgglass.com/ecg_glass/geral/busca.php'
     if not navegador.current_url == url:
         navegador.get(url)
-    escrever(navegador, By.ID, 'text_numero_os', ordem_de_servico)
+    escrever(navegador, By.ID, 'text_numero_os', dados['ordem_de_servico'])
     clicar(navegador, By.CSS_SELECTOR, 'div.formulario_filtro:nth-child(6) > div:nth-child(2) > input:nth-child(1)')
 
-def acessar_orcamento(numero_orcamento):
+def acessar_orcamento(dados):
     url = 'https://ecgglass.com/ecg_glass/geral/busca.php'
     if not navegador.current_url == url:
         navegador.get(url)
-    escrever(navegador, By.ID, 'text_numero_orcamento', numero_orcamento)
+    escrever(navegador, By.ID, 'text_numero_orcamento', dados['numero_orcamento'])
     clicar(navegador, By.CSS_SELECTOR, 'div.formulario_filtro:nth-child(4) > div:nth-child(2) > input:nth-child(1)')
 
-#BUSCAR DADOS
-
-def acessar_dados_cliente(ordem_de_servico):
+def acessar_dados_cliente(dados):
     url = 'https://ecgglass.com/ecg_glass/geral/busca.php'
     if not navegador.current_url == url:
         navegador.get(url)
-    escrever(navegador, By.ID, 'text_numero_os', ordem_de_servico)
+    escrever(navegador, By.ID, 'text_numero_os', dados['ordem_de_servico'])
     clicar(navegador, By.CSS_SELECTOR, 'div.formulario_filtro:nth-child(6) > div:nth-child(2) > input:nth-child(1)')
     clicar(navegador, By.CSS_SELECTOR, 'a.f_16:nth-child(1)')
     clicar(navegador, By.CSS_SELECTOR, '.f_16 > b:nth-child(1)')
 
-def pegar_dados_obra(ordem_de_servico, numero_orcamento):
+def pegar_dados_obra(dados):
     '''
     retorna um dicionario, com os itens 'area', 'cor', 'vidro' e preco.
     '''
     url_parcial = 'https://ecgglass.com/ecg_glass/ordemServico/cadOrdemServico.php?tipo=view&cod='
     if url_parcial not in navegador.current_url:
-        acessar_ordem_servico(navegador, ordem_de_servico)
+        acessar_ordem_servico(navegador, dados['ordem_de_servico'])
     WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete") 
     area = pegar_texto(navegador, By.CSS_SELECTOR, 'div.col-12:nth-child(7)')
     area = re.sub(r'\D', '', area)
@@ -75,9 +69,14 @@ def pegar_dados_obra(ordem_de_servico, numero_orcamento):
                 cor = pegar_texto(navegador, By.CSS_SELECTOR, '.ml-3 > b:nth-child(1)').lower()
                 vidro = pegar_texto(navegador, By.CSS_SELECTOR, 'div.row:nth-child(3) > div:nth-child(1) > label:nth-child(1) > b:nth-child(1)').lower()
                 break
-    acessar_orcamento(navegador, numero_orcamento)
+    acessar_orcamento(navegador, dados['numero_orcamento'])
     preco = pegar_texto(navegador, By.CSS_SELECTOR, 'html body div table.table tbody tr td table tbody tr td.tabelaSubCorpo b')
-    dados_obra = {'area' : area, 'cor' : cor, 'vidro' : vidro, 'preco' : preco}
+    dados_obra = {
+        'area' : area, 
+        'cor' : cor, 
+        'vidro' : vidro, 
+        'preco' : preco
+        }
     return dados_obra
 
 def pegar_dados_cliente(ordem_de_servico):
