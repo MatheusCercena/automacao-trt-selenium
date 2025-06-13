@@ -9,5 +9,3 @@ def validar_ordem_de_servico(ordem_de_servico):
     except:
         return False
     
-t = input('Teste: ')
-print(validar_ordem_de_servico(t))
