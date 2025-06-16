@@ -93,7 +93,6 @@ def pegar_dados_cliente(navegador, ordem_de_servico):
     'cpf' : cpf,
     'email' : email,
     }
-    print(dados_cliente)
     return dados_cliente
 
 def pegar_endereco_cliente(navegador, ordem_de_servico):

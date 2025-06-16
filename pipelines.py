@@ -48,8 +48,8 @@ def criar_dados(navegador, ordem_de_servico):
     cores_anodizadas = ['BRONZE1002 ANODIZADO', 'INOX JATEADO', 'NAT. FOSCO']
     processo = 'anodizada' if dados_obra['cor'] in [cores_anodizadas] else 'pintada'
     genero = gender_api.define_gender(dados_cliente['nome'])
-    datahj = (datetime.today() + timedelta(days=1)).strftime('%d%m%y')
-    data_final = (datetime.today() + timedelta(days=1) + relativedelta(months=2)).strftime('%d%m%y')
+    datahj = (datetime.today() + timedelta(days=1)).strftime('%d%m%Y')
+    data_final = (datetime.today() + timedelta(days=1) + relativedelta(months=2)).strftime('%d%m%Y')
     obs = f'Envidraçamento de sacada com {dados_obra['vidro']} e esquadrias de aluminio {processo} na cor {dados_obra['cor']}.'
 
     dados = {
@@ -75,12 +75,12 @@ def criar_dados(navegador, ordem_de_servico):
     return dados
 
 def preencher_trts(navegador, dados):
-    # criar_nova_trt(navegador, )
-    # preencher_observacao(navegador, dados)
-    # adicionar_atividade(navegador, dados)
-    # informar_contratante(navegador, dados)
-    # proprietario(navegador, dados)
-    # selecionar_coordenadas(navegador)
-    # validacao(navegador)
-    emitir_boleto(navegador)
+    criar_nova_trt(navegador, )
+    preencher_observacao(navegador, dados)
+    adicionar_atividade(navegador, dados)
+    informar_contratante(navegador, dados)
+    proprietario(navegador, dados)
+    selecionar_coordenadas(navegador)
+    validacao(navegador)
+    # emitir_boleto(navegador, dados)
 

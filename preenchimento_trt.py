@@ -4,6 +4,8 @@ import pyautogui
 from acoes import *
 import requests
 import re
+import os
+from bs4 import BeautifulSoup
 
 def login_sinceti(navegador, usuario, senha):
     navegador.get('https://servicos.sinceti.net.br/')
@@ -104,27 +106,47 @@ def validacao(navegador):
     else:
         return True
         
-def emitir_boleto(navegador):
+def emitir_boleto(navegador, dados):
     esperar = WebDriverWait(navegador, 20)
     esperar.until(lambda navegador: 'https://servicos.sinceti.net.br/app/view/sight/ini?form=Art&id=' in navegador.current_url)
-    clicar(navegador, By.ID, 'emitirBoleto')
-    clicar(navegador, By.ID, 'save')
-    sleep(3)
-
+    try:
+        clicar(navegador, By.ID, 'emitirBoleto')
+    except:
+        pass
+    try:
+        clicar(navegador, By.ID, 'save')
+    except:
+        pass
+    esperar_ajax(navegador)
+    espera_objeto = WebDriverWait(navegador, 10)
+    espera_objeto.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'html body div.site div#conteudo_container div#conteudo div.cad_conteudo div.cad_conteudo_sub div#cad_botoes a.botao_imprimir')))
     botao = navegador.find_element(By.CSS_SELECTOR, 'a.botao_imprimir:nth-child(6)')
-
     onclick = botao.get_attribute("onclick")
 
     match = re.search(r"window\.open\('([^']+)'", onclick)
     url_boleto = match.group(1)
 
-    arquivo_saida = "boleto.pdf"
+    nome_saida = f"Boleto_TRT_{dados['nome']}_{dados['numero_orcamento'].replace('/', '-')}.pdf"
+    arquivo_saida = os.path.join('TRTs', nome_saida)
     headers = {
         "User-Agent": "Mozilla/5.0",
     }
-    pdf = requests.get(url_boleto, headers=headers)
+    sessao = requests.Session()
+    sessao.headers.update(headers)
+    sessao.cookies.update({cookie['name']: cookie['value'] for cookie in navegador.get_cookies()})
+
+    resposta = sessao.get(url_boleto)
+    soup = BeautifulSoup(resposta.text, "html.parser")
+
+    iframe = soup.find("iframe")
+    if iframe and 'src' in iframe.attrs:
+        url_pdf_real = iframe['src']
+    else:
+        raise Exception("PDF não encontrado no iframe.")
+
+    resposta_pdf = sessao.get(url_pdf_real)
     with open(arquivo_saida, "wb") as f:
-        f.write(pdf.content)
+        f.write(resposta_pdf.content)
     res = input("O boleto foi impresso? Digite 'parar' para parar.")
     if res == 'parar':
         return False
