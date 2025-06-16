@@ -10,7 +10,7 @@ def login_sinceti(navegador, usuario, senha):
     escrever(navegador, By.ID, 'login', usuario)
     escrever(navegador, By.ID, 'senha', senha)
     clicar(navegador, By.ID, 'code')
-    sleep(10)
+    sleep(15)
 
 def criar_nova_trt(navegador):
     navegador.get('https://servicos.sinceti.net.br/app/view/sight/main.php?form=CadastroART')
@@ -45,21 +45,20 @@ def informar_contratante(navegador, dados):
     try:
         clicar(navegador, By.CSS_SELECTOR, 'html body div.site div#conteudo_container div#conteudo div.cad_conteudo div.ESPACAMENTO div#evtContainerArt div#conteudo form#form div.cad_conteudo div#evtFormHidden div.cad_conteudo_sub div#ContratoContainer_repete div#myCont0 div.cad_form_cont_campo div#evtContratoContratanteContainer0 div.cad_conteudo_sub_exp div.cad_form_cont_campo div#contratante0_ResultPesquisa a.botao_adicionar')
         adicionar_contratante(navegador, dados)
+        navegador.switch_to.window(janela_atual)
+        if len(dados['cpf']) == 11:
+            campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
+            clicar(navegador, By.ID, 'contratante0_CampoContratantePFNome')
+            navegador.execute_script("arguments[0].value = '';", campo)
+            escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
+        else:
+            campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePJNome')
+            clicar(navegador, By.ID, 'contratante0_CampoContratantePJNome')
+            navegador.execute_script("arguments[0].value = '';", campo)
+            escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
+        clicar(navegador, By.ID, 'myCont0')
     except:
         pass
-    navegador.switch_to.window(janela_atual)
-
-    if len(dados['cpf']) == 11:
-        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
-        clicar(navegador, By.ID, 'contratante0_CampoContratantePFNome')
-        navegador.execute_script("arguments[0].value = '';", campo)
-        escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
-    else:
-        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePJNome')
-        clicar(navegador, By.ID, 'contratante0_CampoContratantePJNome')
-        navegador.execute_script("arguments[0].value = '';", campo)
-        escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
-    clicar(navegador, By.ID, 'myCont0')
 
 
 def adicionar_contratante(navegador, dados):
@@ -99,12 +98,18 @@ def selecionar_coordenadas(navegador):
 
 def validacao(navegador):
     clicar(navegador, By.ID, 'code')
-    
+    res = input("Insira a validação e confira os dados, então clique enter ou 'parar': ")
+    if res == 'parar':
+        return False
+    else:
+        return True
+        
 def emitir_boleto(navegador):
     esperar = WebDriverWait(navegador, 20)
-    esperar.until('https://servicos.sinceti.net.br/app/view/sight/ini?form=Art&id=' in navegador.current_url)
+    esperar.until(lambda navegador: 'https://servicos.sinceti.net.br/app/view/sight/ini?form=Art&id=' in navegador.current_url)
     clicar(navegador, By.ID, 'emitirBoleto')
     clicar(navegador, By.ID, 'save')
+    sleep(3)
 
     botao = navegador.find_element(By.CSS_SELECTOR, 'a.botao_imprimir:nth-child(6)')
 
@@ -117,10 +122,11 @@ def emitir_boleto(navegador):
     headers = {
         "User-Agent": "Mozilla/5.0",
     }
-    res = requests.get(url_boleto, headers=headers)
-    if res.status_code == 200:
-        with open(arquivo_saida, "wb") as f:
-            f.write(res.content)
-        print("Boleto baixado com sucesso.")
+    pdf = requests.get(url_boleto, headers=headers)
+    with open(arquivo_saida, "wb") as f:
+        f.write(pdf.content)
+    res = input("O boleto foi impresso? Digite 'parar' para parar.")
+    if res == 'parar':
+        return False
     else:
-        print(f"Erro ao baixar o boleto. Status: {res.status_code}")
+        return True

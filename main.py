@@ -6,7 +6,9 @@ if __name__ == "__main__":
     navegador = abrir_navegador()
     fazer_logins(navegador)
     for ordem_de_servico in lista_de_pedidos:
-        dados = criar_dados(navegador, ordem_de_servico)
-        print(f' Dados da OS ({ordem_de_servico}): {dados}')
-        preencher_trts(navegador, dados)
-    
+        navegador.get('https://servicos.sinceti.net.br/app/view/sight/ini?form=Art&id=5638841')
+        # dados = criar_dados(navegador, ordem_de_servico)
+        # print(f' Dados da OS ({ordem_de_servico}): {dados}')
+        # preencher_trts(navegador, dados)
+        emitir_boleto(navegador)
+

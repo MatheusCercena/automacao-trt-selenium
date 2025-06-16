@@ -75,11 +75,12 @@ def criar_dados(navegador, ordem_de_servico):
     return dados
 
 def preencher_trts(navegador, dados):
-    criar_nova_trt(navegador, )
-    preencher_observacao(navegador, dados)
-    adicionar_atividade(navegador, dados)
-    informar_contratante(navegador, dados)
-    proprietario(navegador, dados)
-    selecionar_coordenadas(navegador)
-    validacao(navegador)
+    # criar_nova_trt(navegador, )
+    # preencher_observacao(navegador, dados)
+    # adicionar_atividade(navegador, dados)
+    # informar_contratante(navegador, dados)
+    # proprietario(navegador, dados)
+    # selecionar_coordenadas(navegador)
+    # validacao(navegador)
+    emitir_boleto(navegador)
 
