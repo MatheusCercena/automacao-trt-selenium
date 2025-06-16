@@ -1,33 +1,29 @@
-from selenium import webdriver
-from selenium.webdriver.firefox.service import Service
-from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from time import sleep
 import pyautogui
 from acoes import *
+import requests
+import re
 
-navegador = webdriver.Firefox(service=Service(), options=Options())
-
-def login_sinceti(usuario, senha):
+def login_sinceti(navegador, usuario, senha):
     navegador.get('https://servicos.sinceti.net.br/')
-    navegador.maximize_window()
     escrever(navegador, By.ID, 'login', usuario)
     escrever(navegador, By.ID, 'senha', senha)
     clicar(navegador, By.ID, 'code')
     sleep(10)
 
-def criar_nova_trt():
+def criar_nova_trt(navegador):
     navegador.get('https://servicos.sinceti.net.br/app/view/sight/main.php?form=CadastroART')
     selecionar_combo_box(navegador, By.ID, 'TIPOART', 'COD101')
     clicar(navegador, By.CLASS_NAME, 'ajs-ok')
     selecionar_combo_box(navegador, By.ID, 'FORMADEREGISTRO', '5')
 
-def preencher_dados(dados):
+def preencher_observacao(navegador, dados):
     selecionar_combo_box(navegador, By.ID, 'FINALIDADE', '29')
     escrever(navegador, By.ID, 'OBSERVACAO', dados['observacao'])
     selecionar_combo_box(navegador, By.ID, 'ACAOINSTITUCIONAL', '17')
 
-def adicionar_atividade(dados):
+def adicionar_atividade(navegador, dados):
     clicar(navegador, By.ID, 'NOVO_ATIVIDADE')
     selecionar_combo_box(navegador, By.ID, 'NIVEL0', '1004')
     selecionar_combo_box(navegador, By.ID, 'ATIVIDADEPROFISSIONAL0', '4200')
@@ -36,47 +32,95 @@ def adicionar_atividade(dados):
     selecionar_combo_box(navegador, By.ID, 'UNIDADE0', '2')
     escrever(navegador, By.ID, 'QUANTIDADE0', dados['area'])
 
-def informar_contratante(dados):
+def informar_contratante(navegador, dados):
     clicar(navegador, By.ID, 'NOVO_CONTRATO')
-    clicar(navegador, By.ID, 'contratante0_ContratantePFNome')
-    escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
+    if len(dados['cpf']) == 11:
+        clicar(navegador, By.ID, 'contratante0_ContratantePFNome')
+        escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
+    else:
+        clicar(navegador, By.ID, 'contratante0_ContratantePJNome')
+        escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
     clicar(navegador, By.ID, 'myCont0')
-    # clicar(navegador, By.CLASS_NAME, 'botao_adicionar')
+    janela_atual = navegador.current_window_handle
+    try:
+        clicar(navegador, By.CSS_SELECTOR, 'html body div.site div#conteudo_container div#conteudo div.cad_conteudo div.ESPACAMENTO div#evtContainerArt div#conteudo form#form div.cad_conteudo div#evtFormHidden div.cad_conteudo_sub div#ContratoContainer_repete div#myCont0 div.cad_form_cont_campo div#evtContratoContratanteContainer0 div.cad_conteudo_sub_exp div.cad_form_cont_campo div#contratante0_ResultPesquisa a.botao_adicionar')
+        adicionar_contratante(navegador, dados)
+    except:
+        pass
+    navegador.switch_to.window(janela_atual)
 
-def adicionar_contratante(dados):
+    if len(dados['cpf']) == 11:
+        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
+        clicar(navegador, By.ID, 'contratante0_CampoContratantePFNome')
+        navegador.execute_script("arguments[0].value = '';", campo)
+        escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
+    else:
+        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePJNome')
+        clicar(navegador, By.ID, 'contratante0_CampoContratantePJNome')
+        navegador.execute_script("arguments[0].value = '';", campo)
+        escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
+    clicar(navegador, By.ID, 'myCont0')
+
+
+def adicionar_contratante(navegador, dados):
+    sleep(1)
     trocar_janela_ativa(navegador)
-    escrever(navegador, By.ID, 'CPF', dados['cpf'])
-    selecionar_combo_box(navegador, By.ID, 'SEXO', dados['genero'])
-    escrever(navegador, By.ID, 'EMAIL', dados['email'])
-
+    if len(dados['cpf']) == 11:
+        escrever(navegador, By.ID, 'CPF', dados['cpf'])
+        selecionar_combo_box(navegador, By.ID, 'SEXO', dados['genero'])
+        escrever(navegador, By.ID, 'EMAIL', dados['email'])
+    else: 
+        escrever(navegador, By.ID, 'CNPJ', dados['cpf'])
+        selecionar_combo_box(navegador, By.ID, 'TIPO', 8)
+        escrever(navegador, By.ID, 'NOMEFANTASIA', dados['fantasia'])
     escrever(navegador, By.ID, 'CEP', dados['cep'])
     escrever(navegador, By.ID, 'ENDERECO_NUMERO', dados['numero'])
     escrever(navegador, By.ID, 'COMPLEMENTO', dados['complemento'])
     escrever(navegador, By.ID, 'ENDERECO_TELEFONE', dados['telefone'])
-    # clicar(navegador, By.ID, 'save')
+    clicar(navegador, By.ID, 'save')
+    # fechar_janelas_extras(navegador)
+    sleep(1)
 
-    janela_atual = navegador.current_window_handle
-    navegador.switch_to.window(janela_atual)
 
-    limpar(navegador, By.ID, 'contratante0_ContratantePFNome')
-    clicar(navegador, By.ID, 'myCont0')
-    escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
-
-def contratante(dados):
+def proprietario(navegador, dados):
     clicar(navegador, By.ID, 'proprietario0_AproveitaDados')
-    escrever(navegador, By.ID, 'CONTRATO_NUMERO', dados['ordem_de_servico'])
-    escrever(navegador, By.ID, 'CONTRATO_DATAINICIO0', dados['datahj'])
+    escrever(navegador, By.ID, 'CONTRATO_NUMERO', dados['numero_orcamento'])
+    escrever(navegador, By.ID, 'CONTRATO_DATAINICIO0', dados['data_inicial'])
     escrever(navegador, By.ID, 'CONTRATO_DATAFIM0', dados['data_final'])
     pyautogui.press('enter')
     sleep(1)
-    escrever(navegador, By.ID, 'CONTRATO_VALOR0', dados['valor'])
+    escrever(navegador, By.ID, 'CONTRATO_VALOR0', dados['preco'])
     
-    
-def selecionar_coordenadas():
+def selecionar_coordenadas(navegador):
     clicar(navegador, By.CSS_SELECTOR, '#evtContratoEnderecoContainerSpecific0 > div:nth-child(3) > input:nth-child(1)')
     clicar(navegador, By.ID, 'ESCOLHERCORDENADASGMAP')
     trocar_janela_ativa(navegador)
     fechar_janelas_extras(navegador)
 
-def validacao():
+def validacao(navegador):
     clicar(navegador, By.ID, 'code')
+    
+def emitir_boleto(navegador):
+    esperar = WebDriverWait(navegador, 20)
+    esperar.until('https://servicos.sinceti.net.br/app/view/sight/ini?form=Art&id=' in navegador.current_url)
+    clicar(navegador, By.ID, 'emitirBoleto')
+    clicar(navegador, By.ID, 'save')
+
+    botao = navegador.find_element(By.CSS_SELECTOR, 'a.botao_imprimir:nth-child(6)')
+
+    onclick = botao.get_attribute("onclick")
+
+    match = re.search(r"window\.open\('([^']+)'", onclick)
+    url_boleto = match.group(1)
+
+    arquivo_saida = "boleto.pdf"
+    headers = {
+        "User-Agent": "Mozilla/5.0",
+    }
+    res = requests.get(url_boleto, headers=headers)
+    if res.status_code == 200:
+        with open(arquivo_saida, "wb") as f:
+            f.write(res.content)
+        print("Boleto baixado com sucesso.")
+    else:
+        print(f"Erro ao baixar o boleto. Status: {res.status_code}")
