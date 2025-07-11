@@ -19,7 +19,7 @@ def abrir_navegador():
     return navegador
 
 def fazer_logins(navegador):
-    login_sinceti(navegador, usuario_sinceti, senha_sinceti)
+    # login_sinceti(navegador, usuario_sinceti, senha_sinceti)
     login_ecg(navegador, usuario_ecg, senha_ecg)
 
 def criar_dados(navegador, ordem_de_servico):
@@ -51,7 +51,6 @@ def criar_dados(navegador, ordem_de_servico):
     datahj = (datetime.today() + timedelta(days=1)).strftime('%d%m%Y')
     data_final = (datetime.today() + timedelta(days=1) + relativedelta(months=2)).strftime('%d%m%Y')
     obs = f'Envidraçamento de sacada com {dados_obra['vidro']} e esquadrias de aluminio {processo} na cor {dados_obra['cor']}.'
-
     dados = {
         'numero_orcamento' : numero_orcamento,
         'nome' : dados_cliente['nome'],
@@ -67,7 +66,7 @@ def criar_dados(navegador, ordem_de_servico):
         'cor' : dados_obra['cor'], 
         'vidro' : dados_obra['vidro'], 
         'preco' : valor,
-        'processo' : processo,        
+        'processo' : processo,
         'observacao' : obs,
         'data_inicial' : datahj,
         'data_final' : data_final
@@ -75,7 +74,7 @@ def criar_dados(navegador, ordem_de_servico):
     return dados
 
 def preencher_trts(navegador, dados):
-    criar_nova_trt(navegador, )
+    criar_nova_trt(navegador)
     preencher_observacao(navegador, dados)
     adicionar_atividade(navegador, dados)
     informar_contratante(navegador, dados)

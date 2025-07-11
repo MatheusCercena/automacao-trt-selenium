@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 import re
 from acoes import *
 from time import sleep
+from cep_api import busca_cep, validar_cep
 
 def login_ecg(navegador, usuario, senha):
     navegador.get('https://ecgglass.com/ecg_glass/login/login.php')
@@ -103,7 +104,18 @@ def pegar_endereco_cliente(navegador, ordem_de_servico):
     if url_parcial not in navegador.current_url:
         acessar_dados_cliente(navegador, ordem_de_servico)
     WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
+    # uf = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(7) > span:nth-child(2)')
+    # cidade = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(8) > span:nth-child(2)')
+    # logradouro = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(10) > span:nth-child(2) > a:nth-child(1)').strip().replace('.', '')
     cep = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(6) > span:nth-child(2)')
+
+    while validar_cep(cep) == False:
+        cep = ('Não conseguimos localizar o CEP válido, necessario inserir manualmente ao lado: ')
+
+    # if len(cep) != 8:
+    #     # cep = busca_cep(uf, cidade, logradouro)
+    #     input = ('Não conseguimos localizar o CEP, ele tem menos de 8 digitos, necessario inserir manualmente')
+    
     numero = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(11) > span:nth-child(2)')
     complemento = pegar_texto(navegador, By.CSS_SELECTOR, 'div.campo:nth-child(12) > span:nth-child(2)').title()
     telefone = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(4) > span:nth-child(2) > a:nth-child(1)')
