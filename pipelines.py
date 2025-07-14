@@ -9,17 +9,18 @@ from preenchimento_trt import *
 from config import senha_ecg, usuario_ecg, senha_sinceti, usuario_sinceti
 
 def abrir_navegador():
-    # options=Options()
-    # options.add_argument('--headless')
-    # options.add_argument('--width=1920')
-    # options.add_argument('--height=1080')
+    # if headless == True:
+    #     options=Options()
+    #     options.add_argument('--headless')
+    #     options.add_argument('--width=1920')
+    #     options.add_argument('--height=1080')
 
     navegador = webdriver.Firefox(service=Service(), options=Options())
     navegador.maximize_window()
     return navegador
 
 def fazer_logins(navegador):
-    # login_sinceti(navegador, usuario_sinceti, senha_sinceti)
+    login_sinceti(navegador, usuario_sinceti, senha_sinceti)
     login_ecg(navegador, usuario_ecg, senha_ecg)
 
 def criar_dados(navegador, ordem_de_servico):
@@ -82,4 +83,5 @@ def preencher_trts(navegador, dados):
     selecionar_coordenadas(navegador)
     validacao(navegador)
     # emitir_boleto(navegador, dados)
+    gerar_nome_arquivo(navegador, dados)
 

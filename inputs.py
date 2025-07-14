@@ -20,6 +20,8 @@ def solicitar_ordens_de_servico():
         while validar_ordem_de_servico(ordem_de_servico) != True:
             print('A ordem de serviço informada não é valida.')
             ordem_de_servico = input('Digite a ordem de serviço no formato xxxx/xx-x: ').strip()
+            if ordem_de_servico == 'parar':
+                break
         lista_de_pedidos.append(ordem_de_servico)
         print(f'OS {ordem_de_servico} adicionada com sucesso. Até o momento, foram adicionadas as OS {', '.join(lista_de_pedidos)}.')
     return lista_de_pedidos

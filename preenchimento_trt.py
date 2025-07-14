@@ -1,11 +1,9 @@
 from selenium.webdriver.common.by import By
 from time import sleep
-import pyautogui
 from acoes import *
-import requests
-import re
-import os
+import re, os, requests, pyautogui
 from bs4 import BeautifulSoup
+import wget
 
 def login_sinceti(navegador, usuario, senha):
     navegador.get('https://servicos.sinceti.net.br/')
@@ -62,7 +60,6 @@ def informar_contratante(navegador, dados):
     except:
         pass
 
-
 def adicionar_contratante(navegador, dados):
     sleep(1)
     trocar_janela_ativa(navegador)
@@ -70,18 +67,17 @@ def adicionar_contratante(navegador, dados):
         escrever(navegador, By.ID, 'CPF', dados['cpf'])
         selecionar_combo_box(navegador, By.ID, 'SEXO', dados['genero'])
         escrever(navegador, By.ID, 'EMAIL', dados['email'])
-    else: 
-        escrever(navegador, By.ID, 'CNPJ', dados['cpf'])
+    else:
         selecionar_combo_box(navegador, By.ID, 'TIPO', 8)
+        escrever(navegador, By.ID, 'CNPJ', dados['cpf'])
         escrever(navegador, By.ID, 'NOMEFANTASIA', dados['fantasia'])
     escrever(navegador, By.ID, 'CEP', dados['cep'])
+    sleep(1)
     escrever(navegador, By.ID, 'ENDERECO_NUMERO', dados['numero'])
     escrever(navegador, By.ID, 'COMPLEMENTO', dados['complemento'])
     escrever(navegador, By.ID, 'ENDERECO_TELEFONE', dados['telefone'])
     clicar(navegador, By.ID, 'save')
-    # fechar_janelas_extras(navegador)
     sleep(1)
-
 
 def proprietario(navegador, dados):
     clicar(navegador, By.ID, 'proprietario0_AproveitaDados')
@@ -105,49 +101,48 @@ def validacao(navegador):
         return False
     else:
         return True
-        
-def emitir_boleto(navegador, dados):
-    esperar = WebDriverWait(navegador, 20)
-    esperar.until(lambda navegador: 'https://servicos.sinceti.net.br/app/view/sight/ini?form=Art&id=' in navegador.current_url)
-    try:
-        clicar(navegador, By.ID, 'emitirBoleto')
-    except:
-        pass
-    try:
-        clicar(navegador, By.ID, 'save')
-    except:
-        pass
-    esperar_ajax(navegador)
-    espera_objeto = WebDriverWait(navegador, 10)
-    espera_objeto.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'html body div.site div#conteudo_container div#conteudo div.cad_conteudo div.cad_conteudo_sub div#cad_botoes a.botao_imprimir')))
-    botao = navegador.find_element(By.CSS_SELECTOR, 'a.botao_imprimir:nth-child(6)')
-    onclick = botao.get_attribute("onclick")
 
-    match = re.search(r"window\.open\('([^']+)'", onclick)
-    url_boleto = match.group(1)
+# def emitir_boleto(navegador):
+#     esperar = WebDriverWait(navegador, 20)
+#     esperar.until(lambda nav: 'https://servicos.sinceti.net.br/app/view/sight/ini?form=Art&id=' in nav.current_url)
+#     navegador.find_element(By.ID, 'emitirBoleto').click()
 
-    nome_saida = f"Boleto_TRT_{dados['nome']}_{dados['numero_orcamento'].replace('/', '-')}.pdf"
-    arquivo_saida = os.path.join('TRTs', nome_saida)
-    headers = {
-        "User-Agent": "Mozilla/5.0",
-    }
-    sessao = requests.Session()
-    sessao.headers.update(headers)
-    sessao.cookies.update({cookie['name']: cookie['value'] for cookie in navegador.get_cookies()})
+#     esperar.until(EC.presence_of_element_located((By.CSS_SELECTOR, 'div#cad_botoes a.botao_imprimir:nth-child(6)')))
 
-    resposta = sessao.get(url_boleto)
-    soup = BeautifulSoup(resposta.text, "html.parser")
+#     botao = navegador.find_element(By.CSS_SELECTOR, 'a.botao_imprimir:nth-child(6)')
+#     onclick = botao.get_attribute("onclick")
+#     url_boleto = re.search(r"window\.open\('([^']+)'", onclick).group(1)
+#     print(f'url: {url_boleto}')
 
-    iframe = soup.find("iframe")
-    if iframe and 'src' in iframe.attrs:
-        url_pdf_real = iframe['src']
-    else:
-        raise Exception("PDF não encontrado no iframe.")
+#     navegador.execute_script(f"window.open('{url_boleto}', '_blank');")
+#     navegador.switch_to.window(navegador.window_handles[-1])
+#     soup = BeautifulSoup(navegador.page_source, "html.parser")
+#     navegador.close()
+#     navegador.switch_to.window(navegador.window_handles[0])
 
-    resposta_pdf = sessao.get(url_pdf_real)
-    with open(arquivo_saida, "wb") as f:
-        f.write(resposta_pdf.content)
-    res = input("O boleto foi impresso? Digite 'parar' para parar.")
+#     url_pdf_real = soup.find("iframe")["src"]
+
+#     # nome_saida = f"Boleto_TRT_{dados['nome']}_{dados['numero_orcamento'].replace('/', '-')}.pdf"
+#     arquivo_saida = os.path.join('TRTs', nome_saida)
+
+#     wget.download(url_pdf_real, arquivo_saida)
+
+#     res = input("O boleto foi impresso? Digite 'parar' para parar.")
+#     if res == 'parar':
+#         return False
+#     else:
+#         return True
+
+def gerar_nome_arquivo(navegador, dados):
+    print('Nome do boleto: ')
+    print(f'Boleto_TRT_{dados['nome'].replace(' ', '')}_{dados['numero_orcamento'].replace('/', '-')}')
+
+    clicar(navegador, By.ID, 'emitirBoleto')
+    clicar(navegador, By.ID, 'save')
+    # sleep(2)
+    # clicar(navegador, By.ID, 'botao_imprimir')
+
+    res = input("Baixe o boleto e confira os dados, então clique enter ou 'parar': ")
     if res == 'parar':
         return False
     else:
