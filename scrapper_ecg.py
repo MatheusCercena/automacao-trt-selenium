@@ -2,7 +2,7 @@ from selenium.webdriver.common.by import By
 import re
 from acoes import *
 from time import sleep
-from cep_api import busca_cep, validar_cep
+from cep_api import validar_cep
 
 def login_ecg(navegador, usuario, senha):
     navegador.get('https://ecgglass.com/ecg_glass/login/login.php')

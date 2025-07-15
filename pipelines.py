@@ -82,6 +82,5 @@ def preencher_trts(navegador, dados):
     proprietario(navegador, dados)
     selecionar_coordenadas(navegador)
     validacao(navegador)
-    # emitir_boleto(navegador, dados)
     gerar_nome_arquivo(navegador, dados)
 

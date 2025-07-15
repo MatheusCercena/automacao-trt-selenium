@@ -14,20 +14,16 @@ O que deseja fazer?
 Opção: ''')
     navegador = abrir_navegador()
     fazer_logins(navegador)
-
     print('Insira abaixo as Ordens de Serviço das TRTs a serem feitas, lembrando que após abrir o navegador você terá 15 segundos para inserir a validação do login no SINCETI.')
-    for ordem_de_servico in lista_de_pedidos:
-        dados = criar_dados(navegador, ordem_de_servico)
-        tabela = pandas.DataFrame([dados])
-        print(tabela.T)
-        preencher_trts(navegador, dados)
     if res == '1': 
         lista_de_pedidos = solicitar_ordens_de_servico()
         fazer_logins(navegador)
         for ordem_de_servico in lista_de_pedidos:
             dados = criar_dados(navegador, ordem_de_servico)
-            print(f' Dados da OS ({ordem_de_servico}): {dados}')
+            tabela = pandas.DataFrame([dados])
+            print(tabela.T)
             preencher_trts(navegador, dados)
+
     elif res == '2': 
         fazer_logins(navegador)
         dar_baixa(navegador)
