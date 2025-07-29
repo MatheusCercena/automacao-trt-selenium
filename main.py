@@ -28,3 +28,4 @@ Opção: ''')
         fazer_logins(navegador)
         dar_baixa(navegador)
 
+# Adicionar uma logica pra verificar se os ultimos numeros do cep sao 000 e entao adicionar o resto do cep manualmente
