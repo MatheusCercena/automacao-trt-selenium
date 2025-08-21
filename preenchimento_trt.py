@@ -85,7 +85,7 @@ def proprietario(navegador, dados):
     pyautogui.press('enter')
     sleep(1)
     escrever(navegador, By.ID, 'CONTRATO_VALOR0', dados['preco'])
-    
+
 def selecionar_coordenadas(navegador):
     clicar(navegador, By.CSS_SELECTOR, '#evtContratoEnderecoContainerSpecific0 > div:nth-child(3) > input:nth-child(1)')
     clicar(navegador, By.ID, 'ESCOLHERCORDENADASGMAP')
@@ -99,12 +99,12 @@ def validacao(navegador):
         return False
     else:
         return True
-    
+
 def gerar_nome_arquivo(navegador, dados):
     print('Nome do boleto: ')
     print(f'Boleto_TRT_{dados['nome'].replace(' ', '')}_{dados['numero_orcamento'].replace('/', '-')}')
 
-    clicar(navegador, By.ID, 'emitirBoleto')
-    clicar(navegador, By.ID, 'save')
+    # clicar(navegador, By.ID, 'emitirBoleto')
+    # clicar(navegador, By.ID, 'save')
 
     res = input("Baixe o boleto e confira os dados, então clique enter.")
