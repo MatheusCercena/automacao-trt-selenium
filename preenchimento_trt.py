@@ -40,23 +40,20 @@ def informar_contratante(navegador, dados):
         escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
     clicar(navegador, By.ID, 'myCont0')
     janela_atual = navegador.current_window_handle
-    try:
-        clicar(navegador, By.CSS_SELECTOR, 'html body div.site div#conteudo_container div#conteudo div.cad_conteudo div.ESPACAMENTO div#evtContainerArt div#conteudo form#form div.cad_conteudo div#evtFormHidden div.cad_conteudo_sub div#ContratoContainer_repete div#myCont0 div.cad_form_cont_campo div#evtContratoContratanteContainer0 div.cad_conteudo_sub_exp div.cad_form_cont_campo div#contratante0_ResultPesquisa a.botao_adicionar')
-        adicionar_contratante(navegador, dados)
-        navegador.switch_to.window(janela_atual)
-        if len(dados['cpf']) == 11:
-            campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
-            clicar(navegador, By.ID, 'contratante0_CampoContratantePFNome')
-            navegador.execute_script("arguments[0].value = '';", campo)
-            escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
-        else:
-            campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePJNome')
-            clicar(navegador, By.ID, 'contratante0_CampoContratantePJNome')
-            navegador.execute_script("arguments[0].value = '';", campo)
-            escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
-        clicar(navegador, By.ID, 'myCont0')
-    except:
-        pass
+    clicar(navegador, By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[9]/div[1]/div/div[7]/div/div[4]/div[12]/div/a')
+    adicionar_contratante(navegador, dados)
+    navegador.switch_to.window(janela_atual)
+    if len(dados['cpf']) == 11:
+        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
+        clicar(navegador, By.ID, 'contratante0_CampoContratantePFNome')
+        navegador.execute_script("arguments[0].value = '';", campo)
+        escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
+    else:
+        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePJNome')
+        clicar(navegador, By.ID, 'contratante0_CampoContratantePJNome')
+        navegador.execute_script("arguments[0].value = '';", campo)
+        escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
+    clicar(navegador, By.ID, 'myCont0')
 
 def adicionar_contratante(navegador, dados):
     sleep(1)
@@ -82,9 +79,9 @@ def proprietario(navegador, dados):
     escrever(navegador, By.ID, 'CONTRATO_NUMERO', dados['numero_orcamento'])
     escrever(navegador, By.ID, 'CONTRATO_DATAINICIO0', dados['data_inicial'])
     escrever(navegador, By.ID, 'CONTRATO_DATAFIM0', dados['data_final'])
-    pyautogui.press('enter')
-    sleep(1)
+    clicar(navegador, By.CSS_SELECTOR, "div.cad_form_cont_campo:nth-child(27) > img:nth-child(3)")
     escrever(navegador, By.ID, 'CONTRATO_VALOR0', dados['preco'])
+    sleep(1)
     
 def selecionar_coordenadas(navegador):
     clicar(navegador, By.CSS_SELECTOR, '#evtContratoEnderecoContainerSpecific0 > div:nth-child(3) > input:nth-child(1)')
@@ -104,7 +101,7 @@ def gerar_nome_arquivo(navegador, dados):
     print('Nome do boleto: ')
     print(f'Boleto_TRT_{dados['nome'].replace(' ', '')}_{dados['numero_orcamento'].replace('/', '-')}')
 
-    clicar(navegador, By.ID, 'emitirBoleto')
-    clicar(navegador, By.ID, 'save')
+    # clicar(navegador, By.ID, 'emitirBoleto')
+    # clicar(navegador, By.ID, 'save')
 
     res = input("Baixe o boleto e confira os dados, então clique enter.")
