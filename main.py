@@ -14,15 +14,9 @@ O que deseja fazer?
 Opção: ''')
     navegador = abrir_navegador()
     print('Insira abaixo as Ordens de Serviço das TRTs a serem feitas, lembrando que após abrir o navegador você terá 15 segundos para inserir a validação do login no SINCETI.')
-<<<<<<< HEAD
     if res == '1': 
         # lista_de_pedidos = solicitar_ordens_de_servico()
         lista_de_pedidos = ['1212/25-1', '1123/25-1']
-=======
-    if res == '1':
-        # lista_de_pedidos = solicitar_ordens_de_servico()
-        lista_de_pedidos = ['1232/25-1', '1213/25-1']
->>>>>>> 46bd3e6740f315634eeb258f5b97b018ecaeb33f
         fazer_logins(navegador)
         for ordem_de_servico in lista_de_pedidos:
             dados = criar_dados(navegador, ordem_de_servico)
