@@ -40,7 +40,7 @@ def pegar_dados_obra(navegador, ordem_de_servico, numero_orcamento):
     url_parcial = 'https://ecgglass.com/ecg_glass/ordemServico/cadOrdemServico.php?tipo=view&cod='
     if url_parcial not in navegador.current_url:
         acessar_ordem_servico(navegador, ordem_de_servico)
-    WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete") 
+    WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
     area = pegar_texto(navegador, By.CSS_SELECTOR, 'div.col-12:nth-child(7)')
     area = re.sub(r'\D', '', area)
     clicar(navegador, By.ID, 'item_menu_dinamico_0')
@@ -69,9 +69,9 @@ def pegar_dados_obra(navegador, ordem_de_servico, numero_orcamento):
     preco = pegar_texto(navegador, By.CSS_SELECTOR, 'html body div table.table tbody tr td table tbody tr td.tabelaSubCorpo b')
     preco = re.sub(r'\D', '', preco)
     dados_obra = {
-        'area' : area, 
-        'cor' : cor, 
-        'vidro' : vidro, 
+        'area' : area,
+        'cor' : cor,
+        'vidro' : vidro,
         'preco' : preco
         }
     return dados_obra
@@ -115,10 +115,10 @@ def pegar_endereco_cliente(navegador, ordem_de_servico):
     # if len(cep) != 8:
     #     # cep = busca_cep(uf, cidade, logradouro)
     #     input = ('Não conseguimos localizar o CEP, ele tem menos de 8 digitos, necessario inserir manualmente')
-    
+
     numero = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(11) > span:nth-child(2)')
     complemento = pegar_texto(navegador, By.CSS_SELECTOR, 'div.campo:nth-child(12) > span:nth-child(2)').title()
-    telefone = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(4) > span:nth-child(2) > a:nth-child(1)')
+    telefone = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(4) > span:nth-child(2)')
     endereco_cliente = {
     'cep' : cep,
     'numero' : numero,
@@ -149,7 +149,7 @@ def pegar_endereco_extra(navegador, ordem_de_servico):
         'numero' : numero,
         'complemento' : complemento,
         'telefone' : telefone
-        } 
+        }
         return endereco_cliente
     except:
         return endereco_cliente
@@ -158,9 +158,9 @@ def pegar_endereco_folha(navegador, ordem_de_servico):
     url_parcial = 'https://ecgglass.com/ecg_glass/ordemServico/cadOrdemServico.php?tipo=view&cod='
     if url_parcial not in navegador.current_url:
         acessar_ordem_servico(navegador, ordem_de_servico)
-    WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete") 
+    WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
     sleep(1)
-    
+
     esperar_ajax(navegador)
     espera_objeto = WebDriverWait(navegador, 10)
     espera_objeto.until(EC.element_to_be_clickable((By.ID, 'select_geral')))

@@ -1,7 +1,6 @@
 from selenium.webdriver.common.by import By
 from time import sleep
 from acoes import *
-import pyautogui
 
 def login_sinceti(navegador, usuario, senha):
     navegador.get('https://servicos.sinceti.net.br/')
@@ -81,8 +80,12 @@ def proprietario(navegador, dados):
     escrever(navegador, By.ID, 'CONTRATO_DATAFIM0', dados['data_final'])
     clicar(navegador, By.CSS_SELECTOR, "div.cad_form_cont_campo:nth-child(27) > img:nth-child(3)")
     escrever(navegador, By.ID, 'CONTRATO_VALOR0', dados['preco'])
+<<<<<<< HEAD
     sleep(1)
     
+=======
+
+>>>>>>> 46bd3e6740f315634eeb258f5b97b018ecaeb33f
 def selecionar_coordenadas(navegador):
     clicar(navegador, By.CSS_SELECTOR, '#evtContratoEnderecoContainerSpecific0 > div:nth-child(3) > input:nth-child(1)')
     clicar(navegador, By.ID, 'ESCOLHERCORDENADASGMAP')
@@ -96,7 +99,7 @@ def validacao(navegador):
         return False
     else:
         return True
-    
+
 def gerar_nome_arquivo(navegador, dados):
     print('Nome do boleto: ')
     print(f'Boleto_TRT_{dados['nome'].replace(' ', '')}_{dados['numero_orcamento'].replace('/', '-')}')
