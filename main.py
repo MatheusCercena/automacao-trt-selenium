@@ -13,12 +13,13 @@ O que deseja fazer?
 [2] Dar baixa nas TRTs
 Opção: ''')
     navegador = abrir_navegador()
-    print('Insira abaixo as Ordens de Serviço das TRTs a serem feitas, lembrando que após abrir o navegador você terá 15 segundos para inserir a validação do login no SINCETI.')
+    # print('Insira abaixo as Ordens de Serviço das TRTs a serem feitas, lembrando que após abrir o navegador você terá 15 segundos para inserir a validação do login no SINCETI.')
     if res == '1': 
-        # lista_de_pedidos = solicitar_ordens_de_servico() , '759/25-1', '1430/25-1', 
-        lista_de_pedidos = ['1376/25-1', '1408/25-1', '1157/25-1', '1388/25-1']
+        lista_de_pedidos = ['2010/25-1', '2003/25-1']
         fazer_logins(navegador)
-        for ordem_de_servico in lista_de_pedidos:
+        for i, ordem_de_servico in enumerate(lista_de_pedidos):
+            print(f'Faltam {i-len(lista_de_pedidos)} TRTs')
+            print(f'OS: {ordem_de_servico}')
             dados = criar_dados(navegador, ordem_de_servico)
             tabela = pandas.DataFrame([dados])
             print(tabela.T)

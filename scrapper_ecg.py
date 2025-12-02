@@ -31,7 +31,7 @@ def acessar_dados_cliente(navegador, ordem_de_servico):
     escrever(navegador, By.ID, 'text_numero_os', ordem_de_servico)
     clicar(navegador, By.CSS_SELECTOR, 'div.formulario_filtro:nth-child(6) > div:nth-child(2) > input:nth-child(1)')
     clicar(navegador, By.CSS_SELECTOR, 'a.f_16:nth-child(1)')
-    clicar(navegador, By.CSS_SELECTOR, '.f_16 > b:nth-child(1)')
+    clicar(navegador, By.CSS_SELECTOR, '.link-body-emphasis > strong:nth-child(1)')
 
 def pegar_dados_obra(navegador, ordem_de_servico, numero_orcamento):
     '''
@@ -59,14 +59,14 @@ def pegar_dados_obra(navegador, ordem_de_servico, numero_orcamento):
     if listar_projetos:
         lista = Select(listar_projetos)
         for serial in lista.options:
-            if '1-SACADA-KAIZEN' in serial.text or '2-PORTAS-KAIZEN' in serial.text:
+            if 'SACADA_KAIZEN' in serial.text or 'PORTAS_KAIZEN' in serial.text:
                 value = serial.get_attribute('value')
                 selecionar_combo_box(navegador, By.NAME, 'itemProj', value)
                 cor = pegar_texto(navegador, By.CSS_SELECTOR, '.ml-3 > b:nth-child(1)').lower()
                 vidro = pegar_texto(navegador, By.CSS_SELECTOR, 'div.row:nth-child(3) > div:nth-child(1) > label:nth-child(1) > b:nth-child(1)').lower()
                 break
     acessar_orcamento(navegador, numero_orcamento)
-    preco = pegar_texto(navegador, By.CSS_SELECTOR, 'html body div table.table tbody tr td table tbody tr td.tabelaSubCorpo b')
+    preco = pegar_texto(navegador, By.CSS_SELECTOR, '.tabelaSubCorpo > b:nth-child(1)')
     preco = re.sub(r'\D', '', preco)
     dados_obra = {
         'area' : area,
@@ -85,9 +85,9 @@ def pegar_dados_cliente(navegador, ordem_de_servico):
         acessar_dados_cliente(navegador, ordem_de_servico)
     WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
     nome = pegar_texto(navegador, By.CSS_SELECTOR, '.font-weight-bold').title()
-    fantasia = pegar_texto(navegador, By.CSS_SELECTOR, 'form.row:nth-child(1) > div:nth-child(5) > span:nth-child(2)').title()
-    cpf = pegar_texto(navegador, By.CSS_SELECTOR, 'form.row:nth-child(1) > div:nth-child(6) > span:nth-child(2)').replace('.', '').replace('-', '').replace('/', '')
-    email = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(5) > span:nth-child(2) > a:nth-child(1)').lower()
+    fantasia = pegar_texto(navegador, By.CSS_SELECTOR, 'form.row:nth-child(1) > div:nth-child(5) > div:nth-child(1) > span:nth-child(2)').title()
+    cpf = pegar_texto(navegador, By.CSS_SELECTOR, 'form.row:nth-child(1) > div:nth-child(6) > div:nth-child(1) > span:nth-child(2)').replace('.', '').replace('-', '').replace('/', '')
+    email = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(5) > div:nth-child(1) > span:nth-child(2) > a:nth-child(1)').lower()
     dados_cliente = {
     'nome' : nome,
     'fantasia' : fantasia,
@@ -104,28 +104,46 @@ def pegar_endereco_cliente(navegador, ordem_de_servico):
     if url_parcial not in navegador.current_url:
         acessar_dados_cliente(navegador, ordem_de_servico)
     WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
-    # uf = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(7) > span:nth-child(2)')
-    # cidade = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(8) > span:nth-child(2)')
-    # logradouro = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(10) > span:nth-child(2) > a:nth-child(1)').strip().replace('.', '')
-    cep = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(6) > span:nth-child(2)')
+    uf = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(7) > div:nth-child(1) > span:nth-child(2)')
+    cidade = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(8) > div:nth-child(1) > span:nth-child(2)')
+    logradouro = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(10) > div:nth-child(1) > span:nth-child(2) > a:nth-child(1)').strip().replace('.', '')
+    cep = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(6) > div:nth-child(1) > span:nth-child(2)')
 
-    while validar_cep(cep) == False:
-        cep = ('Não conseguimos localizar o CEP válido, necessario inserir manualmente ao lado: ')
+    teste_cep = validar_cep(cep)
+    if teste_cep == False:
+        cep = input('Não conseguimos localizar o CEP válido, necessario inserir manualmente ao lado: ')
 
     # if len(cep) != 8:
     #     # cep = busca_cep(uf, cidade, logradouro)
     #     input = ('Não conseguimos localizar o CEP, ele tem menos de 8 digitos, necessario inserir manualmente')
 
-    numero = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(11) > span:nth-child(2)')
-    complemento = pegar_texto(navegador, By.CSS_SELECTOR, 'div.campo:nth-child(12) > span:nth-child(2)').title()
-    telefone = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(4) > span:nth-child(2)')
+    numero = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(11) > div:nth-child(1) > span:nth-child(2)')
+    complemento = pegar_texto(navegador, By.CSS_SELECTOR, 'div.col-md-6:nth-child(12) > div:nth-child(1) > span:nth-child(2)').title()
+    telefone = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(4) > div:nth-child(1) > span:nth-child(2) > a:nth-child(1)')
     endereco_cliente = {
+    'uf' : uf,
+    'cidade' : cidade,
+    'logradouro' : logradouro,  
     'cep' : cep,
     'numero' : numero,
     'complemento' : complemento,
     'telefone' : telefone
     }
     return endereco_cliente
+
+def verEndereco(navegador, ordem_de_servico):
+    url_parcial = 'https://ecgglass.com/ecg_glass/pessoa/informacao.php?cod_pes='
+    if url_parcial not in navegador.current_url:
+        acessar_dados_cliente(navegador, ordem_de_servico)
+    WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
+    clicar(navegador, By.ID, 'endereco-instalacao-tab')
+    try:
+        texto = navegador.find_element(By.CSS_SELECTOR, "div.col-md-6:nth-child(1) > div:nth-child(1) > span:nth-child(2)")
+        return True
+    except:
+        return False
+    
+        
 
 def pegar_endereco_extra(navegador, ordem_de_servico):
     url_parcial = 'https://ecgglass.com/ecg_glass/pessoa/informacao.php?cod_pes='
@@ -134,23 +152,40 @@ def pegar_endereco_extra(navegador, ordem_de_servico):
     WebDriverWait(navegador, 10).until(lambda d: d.execute_script("return document.readyState") == "complete")
     clicar(navegador, By.ID, 'endereco-instalacao-tab')
     endereco_cliente = {
+        'uf' : '',
+        'cidade' : '',
+        'logradouro' : '',  
         'cep' : '',
         'numero' : '',
         'complemento' : '',
         'telefone' : ''
         }
     try:
-        cep = pegar_texto(navegador, By.CSS_SELECTOR, '#endereco-instalacao > form:nth-child(2) > div:nth-child(6) > span:nth-child(2)')
-        numero = pegar_texto(navegador, By.CSS_SELECTOR, '#endereco-instalacao > form:nth-child(2) > div:nth-child(11) > span:nth-child(2)')
-        complemento = pegar_texto(navegador, By.CSS_SELECTOR, '#endereco-instalacao > form:nth-child(2) > div:nth-child(12) > span:nth-child(2)').title()
-        telefone = pegar_texto(navegador, By.CSS_SELECTOR, '#endereco-instalacao > form:nth-child(2) > div:nth-child(4) > span:nth-child(2) > a:nth-child(1)')
-        endereco_cliente = {
-        'cep' : cep,
-        'numero' : numero,
-        'complemento' : complemento,
-        'telefone' : telefone
-        }
-        return endereco_cliente
+        # uf = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(7) > div:nth-child(1) > span:nth-child(2)')
+        # cidade = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(8) > div:nth-child(1) > span:nth-child(2)')
+        # logradouro = pegar_texto(navegador, By.CSS_SELECTOR, 'form.formulario_cadastro:nth-child(3) > div:nth-child(10) > div:nth-child(1) > span:nth-child(2) > a:nth-child(1)').strip().replace('.', '')
+        # cep = pegar_texto(navegador, By.CSS_SELECTOR, '#endereco-instalacao > form:nth-child(2) > div:nth-child(6) > span:nth-child(2)')
+        # numero = pegar_texto(navegador, By.CSS_SELECTOR, '#endereco-instalacao > form:nth-child(2) > div:nth-child(11) > span:nth-child(2)')
+        # complemento = pegar_texto(navegador, By.CSS_SELECTOR, '#endereco-instalacao > form:nth-child(2) > div:nth-child(12) > span:nth-child(2)').title()
+        # telefone = pegar_texto(navegador, By.CSS_SELECTOR, '#endereco-instalacao > form:nth-child(2) > div:nth-child(4) > span:nth-child(2) > a:nth-child(1)')
+            print("A obra tem mais de 1 endereço, confirme onde é a obra digitando as informações abaixo: ")
+            uf = input("Uf: ")
+            cidade = input("cidade: ")
+            logradouro = input("logradouro: ")
+            cep = input("cep: ")
+            numero = input("numero: ")
+            complemento = input("complemento: ")
+            telefone = input("telefone: ")
+            endereco_cliente = {
+                'uf' : uf,
+                'cidade' : cidade,
+                'logradouro' : logradouro,  
+                'cep' : cep,
+                'numero' : numero,
+                'complemento' : complemento,
+                'telefone' : telefone
+            }
+            return endereco_cliente
     except:
         return endereco_cliente
 

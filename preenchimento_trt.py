@@ -38,25 +38,26 @@ def informar_contratante(navegador, dados):
         clicar(navegador, By.ID, 'contratante0_ContratantePJNome')
         escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
     clicar(navegador, By.ID, 'myCont0')
-    janela_atual = navegador.current_window_handle
-    clicar(navegador, By.XPATH, '/html/body/div[2]/div[3]/div/div[2]/div[3]/div/div/form/div[2]/div[4]/div[9]/div[1]/div/div[7]/div/div[4]/div[12]/div/a')
-    adicionar_contratante(navegador, dados)
-    navegador.switch_to.window(janela_atual)
-    if len(dados['cpf']) == 11:
-        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
-        clicar(navegador, By.ID, 'contratante0_CampoContratantePFNome')
-        navegador.execute_script("arguments[0].value = '';", campo)
-        escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
-    else:
-        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePJNome')
-        clicar(navegador, By.ID, 'contratante0_CampoContratantePJNome')
-        navegador.execute_script("arguments[0].value = '';", campo)
-        escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
-    clicar(navegador, By.ID, 'myCont0')
+    try:
+        sleep(1)
+        navegador.find_element(By.CSS_SELECTOR, 'a.botao_adicionar')
+        print("aqui 1")
+        janela_atual = navegador.current_window_handle
+        print("aqui 2")
+        clicar(navegador, By.CSS_SELECTOR, 'a.botao_adicionar')
+        print("aqui 3")
+        adicionar_contratante(navegador, dados)
+        print("aqui 4")
+        navegador.switch_to.window(janela_atual)
+        print("aqui 5")
+        clicar(navegador, By.ID, 'myCont0')
+        print("aqui 6")
+    except:
+        print("erro ao achar botao adicionar")
 
 def adicionar_contratante(navegador, dados):
-    sleep(1)
     trocar_janela_ativa(navegador)
+    sleep(1)
     if len(dados['cpf']) == 11:
         escrever(navegador, By.ID, 'CPF', dados['cpf'])
         selecionar_combo_box(navegador, By.ID, 'SEXO', dados['genero'])
@@ -66,19 +67,54 @@ def adicionar_contratante(navegador, dados):
         escrever(navegador, By.ID, 'CNPJ', dados['cpf'])
         escrever(navegador, By.ID, 'NOMEFANTASIA', dados['fantasia'])
     escrever(navegador, By.ID, 'CEP', dados['cep'])
-    sleep(1)
+    sleep(3)
+    # if "rua" in dados['logradouro'].lower():
+    #     selecionar_combo_box(navegador, By.ID, 'TIPOLOGRADOURO', 'RUA')
+    # else:
+    #     selecionar_combo_box(navegador, By.ID, 'TIPOLOGRADOURO', 'AVENIDA')
+    # escrever(navegador, By.ID, 'LOGRADOURO', dados['logradouro'])
     escrever(navegador, By.ID, 'ENDERECO_NUMERO', dados['numero'])
     escrever(navegador, By.ID, 'COMPLEMENTO', dados['complemento'])
-    escrever(navegador, By.ID, 'ENDERECO_TELEFONE', dados['telefone'])
-    clicar(navegador, By.ID, 'save')
+    # escrever(navegador, By.ID, 'BAIRRO', dados['bairro'])
+    # escrever(navegador, By.ID, 'CIDADE', dados['cidade'])
+    # escrever(navegador, By.ID, 'UF', dados['UF'])
     sleep(1)
+    print("cheguei aqui")
+    clicar(navegador, By.CSS_SELECTOR, '#cad_botoes')
+    clicar(navegador, By.ID, 'save')
+    print("cheguei aqui2")
+
 
 def proprietario(navegador, dados):
     clicar(navegador, By.ID, 'proprietario0_AproveitaDados')
+    if len(dados['cpf']) == 11:
+        print("aqui 7")
+        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePFNome')
+        print("aqui 8")
+        clicar(navegador, By.ID, 'contratante0_CampoContratantePFNome')
+        print("aqui 9")
+        navegador.execute_script("arguments[0].value = '';", campo)
+        print("aqui 10")
+        escrever(navegador, By.ID, 'contratante0_CampoContratantePFNome', dados['nome'])
+        print("aqui 11")
+    else:
+        campo = navegador.find_element(By.ID, 'contratante0_CampoContratantePJNome')
+        print("aqui 12")
+        clicar(navegador, By.ID, 'contratante0_CampoContratantePJNome')
+        print("aqui 13")
+        navegador.execute_script("arguments[0].value = '';", campo)
+        print("aqui 14")
+        escrever(navegador, By.ID, 'contratante0_CampoContratantePJNome', dados['nome'])
+        print("aqui 15")
+
     escrever(navegador, By.ID, 'CONTRATO_NUMERO', dados['numero_orcamento'])
     escrever(navegador, By.ID, 'CONTRATO_DATAINICIO0', dados['data_inicial'])
     escrever(navegador, By.ID, 'CONTRATO_DATAFIM0', dados['data_final'])
-    clicar(navegador, By.CSS_SELECTOR, "div.cad_form_cont_campo:nth-child(27) > img:nth-child(3)")
+    try:
+        clicar(navegador, By.CSS_SELECTOR, "#myCont0")
+    except:
+        print('CLICAR NA TELAAAA')
+        sleep(8)
     escrever(navegador, By.ID, 'CONTRATO_VALOR0', dados['preco'])
     sleep(1)
 

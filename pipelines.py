@@ -31,18 +31,21 @@ def criar_dados(navegador, ordem_de_servico):
 
     endereco = ''
     endereco_cliente = pegar_endereco_cliente(navegador, ordem_de_servico)
-    endereco_extra = pegar_endereco_extra(navegador, ordem_de_servico)
-    endereco_folha = pegar_endereco_folha(navegador, ordem_de_servico)
-
-    if endereco_folha['cep'] != '':
-        if endereco_folha['cep'] == endereco_cliente['cep']:
-            endereco = endereco_cliente
-        elif endereco_folha['cep'] == endereco_extra['cep']:
-            endereco = endereco_extra
-        else:   
-            endereco = endereco_cliente
+    enderecosExist = verEndereco(navegador, ordem_de_servico)
+    if enderecosExist == True:
+        endereco = pegar_endereco_extra(navegador, ordem_de_servico)
     else:
         endereco = endereco_cliente
+    # endereco_folha = pegar_endereco_folha(navegador, ordem_de_servico)
+    # if endereco_folha['cep'] != '':
+    #     if endereco_folha['cep'] == endereco_cliente['cep']:
+    #         endereco = endereco_cliente
+    #     elif endereco_folha['cep'] == endereco_extra['cep']:
+    #         endereco = endereco_extra
+    #     else:   
+    #         endereco = endereco_cliente
+    # else:
+    #     endereco = endereco_cliente
 
     area = (dados_obra['area'])+'0'
     valor = dados_obra['preco']
@@ -63,6 +66,9 @@ def criar_dados(navegador, ordem_de_servico):
         'numero' : endereco['numero'],
         'complemento' : endereco['complemento'],
         'telefone' : endereco['telefone'],
+        'uf' : endereco['uf'],
+        'cidade' : endereco['cidade'],
+        'logradouro' : endereco['logradouro'],  
         'area' : area, 
         'cor' : dados_obra['cor'], 
         'vidro' : dados_obra['vidro'], 

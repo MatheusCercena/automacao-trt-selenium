@@ -29,6 +29,7 @@ def escrever(navegador, tipo_seletor, seletor, key):
     espera_objeto.until(EC.element_to_be_clickable((tipo_seletor, seletor)))
     objeto = navegador.find_element(tipo_seletor, seletor)
     navegador.execute_script("arguments[0].scrollIntoView({block: 'center'})", objeto)
+    objeto.clear()
     objeto.send_keys(key)
 
 def trocar_janela_ativa(navegador):
@@ -42,7 +43,7 @@ def fechar_janelas_extras(navegador):
     navegador.switch_to.window(navegador.window_handles[0])
 
 def pegar_texto(navegador, tipo_seletor, seletor):
-    espera_objeto = WebDriverWait(navegador, 3)
+    espera_objeto = WebDriverWait(navegador, 10)
     espera_objeto.until(EC.element_to_be_clickable((tipo_seletor, seletor)))
     objeto = navegador.find_element(tipo_seletor, seletor)
     return objeto.text
