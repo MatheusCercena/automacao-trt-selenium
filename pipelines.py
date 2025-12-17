@@ -20,7 +20,7 @@ def abrir_navegador():
     return navegador
 
 def fazer_logins(navegador):
-    #login_sinceti(navegador, usuario_sinceti, senha_sinceti)
+    login_sinceti(navegador, usuario_sinceti, senha_sinceti)
     login_ecg(navegador, usuario_ecg, senha_ecg)
 
 def criar_dados(navegador, ordem_de_servico):

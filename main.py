@@ -4,30 +4,31 @@ import pandas
 from dar_baixa import dar_baixa
 
 if __name__ == "__main__":
-
-    res = ''
-    valores_res = ['1', '2']
-    while res not in valores_res:
-        res = input('''
-O que deseja fazer?
-[1] Cadastrar novas TRTs.
-[2] Dar baixa nas TRTs
-Opção: ''')
     navegador = abrir_navegador()
-    # print('Insira abaixo as Ordens de Serviço das TRTs a serem feitas, lembrando que após abrir o navegador você terá 15 segundos para inserir a validação do login no SINCETI.')
-    if res == '1': 
-        lista_de_pedidos = ['2010/25-1', '2003/25-1']
-        fazer_logins(navegador)
-        for i, ordem_de_servico in enumerate(lista_de_pedidos):
-            print(f'Faltam {i-len(lista_de_pedidos)} TRTs')
-            print(f'OS: {ordem_de_servico}')
-            dados = criar_dados(navegador, ordem_de_servico)
-            tabela = pandas.DataFrame([dados])
-            print(tabela.T)
-            preencher_trts(navegador, dados)
-    elif res == '2':
-        fazer_logins(navegador)
-        dar_baixa(navegador)
+    lista_de_pedidos = ["2067/25-1", "2020/25-1", "2111/25-1"]
+    fazer_logins(navegador)
+    for i, ordem_de_servico in enumerate(lista_de_pedidos):
+        print(f'Faltam {i-len(lista_de_pedidos)} TRTs')
+        print(f'OS: {ordem_de_servico}')
+        dados = criar_dados(navegador, ordem_de_servico)
+        tabela = pandas.DataFrame([dados])
+        print(tabela.T)
+        preencher_trts(navegador, dados)
+
+#     res = ''
+#     valores_res = ['1', '2']
+#     while res not in valores_res:
+#         res = input('''
+# O que deseja fazer?
+# [1] Cadastrar novas TRTs.
+# [2] Dar baixa nas TRTs
+# Opção: ''')
+#     if res == '1': 
+# codigo acima
+    # elif res == '2':
+    #     fazer_logins(navegador)
+    #     dar_baixa(navegador)
+
 
 #     navegador = abrir_navegador()
 #     lista_de_pedidos = ["1933/25-1", "1984/25-1", "1982/25-1", "1980/25-1", "2000/25-1", "2024/25-1", "1983/25-1", "2044/25-1", "1990/25-1", "1985/25-1", "2018/25-1", "1998/25-1", "2125/25-1", "2020/25-1", "1997/25-1"]
