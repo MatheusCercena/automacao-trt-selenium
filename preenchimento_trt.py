@@ -41,17 +41,11 @@ def informar_contratante(navegador, dados):
     try:
         sleep(1)
         navegador.find_element(By.CSS_SELECTOR, 'a.botao_adicionar')
-        print("aqui 1")
         janela_atual = navegador.current_window_handle
-        print("aqui 2")
         clicar(navegador, By.CSS_SELECTOR, 'a.botao_adicionar')
-        print("aqui 3")
         adicionar_contratante(navegador, dados)
-        print("aqui 4")
         navegador.switch_to.window(janela_atual)
-        print("aqui 5")
         clicar(navegador, By.ID, 'myCont0')
-        print("aqui 6")
     except:
         print("erro ao achar botao adicionar")
 
