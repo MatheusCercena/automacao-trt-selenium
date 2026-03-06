@@ -39,12 +39,6 @@ usuario_sinceti = 'seu_usuario_sinceti'
 senha_sinceti = 'sua_senha_sinceti'
 ```
 
-## 🔒 Segurança
-
-- **NUNCA** commite o arquivo `config.py` com suas senhas reais
-- O arquivo `config.py` está no `.gitignore` para não ser enviado ao GitHub
-- Use sempre o `config.example.py` como referência
-
 ## 📖 Como usar
 
 Execute o arquivo principal:
@@ -54,11 +48,7 @@ python main.py
 
 ## 🛠️ Funcionalidades
 
-- [ ] Cadastrar novas TRTs
-- [ ] Dar baixa nas TRTs
-- [ ] Automação de login nos sistemas
-- [ ] Preenchimento automático de formulários
-
-## 📝 Licença
-
-Este projeto é para uso pessoal e educacional.
+Cadastrar novas TRTs
+Dar baixa nas TRTs
+Automação de login nos sistemas
+Preenchimento automático de formulários
