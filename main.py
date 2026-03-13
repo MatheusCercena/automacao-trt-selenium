@@ -5,10 +5,10 @@ from dar_baixa import dar_baixa
 
 if __name__ == "__main__":
     navegador = abrir_navegador()
-    lista_de_pedidos = ["81/26-1"]
+    lista_de_pedidos = ["87/26-1", "153/26-1"]
     fazer_logins(navegador)
     for i, ordem_de_servico in enumerate(lista_de_pedidos):
-        print(f'Faltam {len(lista_de_pedidos)} TRTs')
+        print(f'Faltam {len(lista_de_pedidos) - i} TRTs')
         print(f'OS: {ordem_de_servico}')
         dados = criar_dados(navegador, ordem_de_servico)
         tabela = pandas.DataFrame([dados])
